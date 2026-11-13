@@ -1,7 +1,6 @@
 # แผน M0 — Groundwork
 
-> สถานะ: **รอยืนยัน** ก่อน implement
-> ต้องตอบก่อนเริ่ม: Q1, Q20, Q21, Q22 (OPEN_QUESTIONS.md) — Q26 ตอบได้ก่อน push
+> สถานะ: **implement แล้ว** (13 พ.ย. 2569) — ผลและส่วนที่ต่างจากแผนดู [PROGRESS.md](PROGRESS.md)
 
 ## 1. การประเมิน Sablon กับแบบฟอร์มจริง
 
