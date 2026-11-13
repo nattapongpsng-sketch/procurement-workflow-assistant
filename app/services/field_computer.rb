@@ -72,8 +72,11 @@ class FieldComputer
 
   def compute(definition, visiting)
     fn = definition.computed["fn"]
-    args = Array(definition.computed["args"]).map { |arg| resolve_arg(arg, visiting) }
-    return nil if args.any?(&:blank?) && !BLANK_TOLERANT.include?(fn)
+    raw_args = Array(definition.computed["args"])
+    args = raw_args.map { |arg| resolve_arg(arg, visiting) }
+    # Only field values count as missing; literals such as " " are kept as-is.
+    missing = raw_args.zip(args).any? { |raw, value| !raw.is_a?(Hash) && value.blank? }
+    return nil if missing && !BLANK_TOLERANT.include?(fn)
 
     FUNCTIONS.fetch(fn).call(*args)
   end

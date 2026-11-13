@@ -7,6 +7,8 @@ class ProcurementCase < ApplicationRecord
 
   belongs_to :workflow_template
   has_many :generated_documents, dependent: :destroy
+  # Evidence files (e.g. price screenshot). File fields store the blob's signed id.
+  has_many_attached :attachments
 
   validates :title, presence: true
   validate :data_is_a_hash
