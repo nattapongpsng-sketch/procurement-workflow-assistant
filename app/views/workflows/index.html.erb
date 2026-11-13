@@ -1,0 +1,59 @@
+<% content_for :title, "ค้นหา Workflow" %>
+
+<section class="flex flex-col gap-4 rounded-panel border border-border bg-surface p-6 sm:p-10">
+  <span class="self-start rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-primary">สำหรับคนที่ไม่เคยทำเรื่องจัดซื้อ</span>
+  <h1 class="text-[32px] font-bold leading-tight sm:text-[44px]">จะซื้ออะไร ระบบพาทำให้ครบทุกขั้นตอน</h1>
+  <p class="max-w-3xl text-[15px] text-text-2">
+    พิมพ์สิ่งที่ต้องการจัดซื้อ ระบบจะแนะนำวิธีที่ถูกต้องตามระเบียบ บอกขั้นตอนทั้งหมด
+    และสร้างเอกสารเสนออนุมัติให้จากข้อมูลที่คุณกรอกครั้งเดียว
+  </p>
+  <%= form_with url: root_path, method: :get, role: "search", class: "flex flex-col gap-2 sm:flex-row" do |form| %>
+    <%= form.label :q, "ค้นหา workflow", class: "sr-only" %>
+    <%= form.search_field :q, value: @query, placeholder: "เช่น ซื้อ license ซอฟต์แวร์, จ้างเหมาบริการ",
+          class: "h-12 flex-1 rounded-ctl border border-border-strong bg-surface px-4 text-base focus:border-primary focus:ring-4 focus:ring-primary-ring focus:outline-none" %>
+    <%= render ButtonComponent.new("ค้นหา", type: "submit", size: :lg) %>
+  <% end %>
+  <div class="flex flex-wrap items-center gap-2 text-sm text-text-2">
+    <span>ลองค้นหา:</span>
+    <% WorkflowsController::SUGGESTIONS.each do |suggestion| %>
+      <%= link_to suggestion, root_path(q: suggestion), class: "rounded-full border border-border-strong px-3 py-1 text-text-2 no-underline hover:bg-muted" %>
+    <% end %>
+  </div>
+</section>
+
+<section aria-labelledby="results-heading" class="flex flex-col gap-4">
+  <div class="flex flex-wrap items-baseline justify-between gap-2">
+    <h2 id="results-heading" class="text-xl font-semibold"><%= @query.present? ? "ผลการค้นหา" : "Workflow ทั้งหมด" %></h2>
+    <p class="text-sm text-text-2">
+      <%= @query.present? ? "พบ #{@results.size} workflow สำหรับ “#{@query}”" : "#{@results.size} workflow" %>
+    </p>
+  </div>
+
+  <% if @results.empty? %>
+    <%= render CalloutComponent.new(tone: :warn, title: "ยังไม่พบ workflow ที่ตรงกับ “#{@query}”") do %>
+      ลองใช้คำอื่น เช่น ชื่อสิ่งที่จะซื้อ (โปรแกรม, license) หรือชื่อโปรแกรม ถ้ายังไม่พบ ให้ติดต่อเจ้าหน้าที่พัสดุของหน่วยงาน
+    <% end %>
+  <% else %>
+    <ol class="flex flex-col gap-3">
+      <% @results.each do |result| %>
+        <% workflow = result.workflow %>
+        <li class="flex flex-col gap-4 rounded-card border border-border bg-surface p-5 sm:flex-row sm:items-center">
+          <div class="flex flex-1 flex-col gap-2">
+            <div class="flex flex-wrap gap-2">
+              <%= render BadgeComponent.new("วิธี#{workflow.procurement_method}", tone: :primary) if workflow.procurement_method %>
+              <%= render BadgeComponent.new("พร้อมใช้งาน", tone: :success) %>
+            </div>
+            <h3 class="text-[17px] font-semibold leading-snug"><%= workflow.name %></h3>
+            <p class="text-sm text-text-2"><%= workflow.description %></p>
+            <p class="text-[13px] text-text-2">
+              <%= workflow.workflow_steps.size %> ขั้นตอน ·
+              <%= workflow.document_templates.size %> เอกสารที่ระบบสร้างให้
+              <%= "· #{workflow.summary['legal_short']}" if workflow.summary["legal_short"] %>
+            </p>
+          </div>
+          <%= render ButtonComponent.new("ดูขั้นตอน", href: workflow_path(workflow)) %>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
+</section>

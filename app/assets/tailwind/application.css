@@ -1,1 +1,62 @@
 @import "tailwindcss";
+
+/* Design tokens from the UI canvas "Procurement Workflow Assistant — MVP Design"
+   (design system "ชวนกิน"). Light theme only, as in the source. */
+@theme {
+  --font-sans: "IBM Plex Sans", "IBM Plex Sans Thai", system-ui, "Noto Sans Thai", sans-serif;
+  --font-mono: "IBM Plex Mono", "IBM Plex Sans Thai", ui-monospace, monospace;
+
+  --color-primary: hsl(310 93% 34%);
+  --color-primary-hover: hsl(310 93% 29%);
+  --color-primary-pressed: hsl(310 93% 24%);
+  --color-primary-soft: hsl(313 55% 94%);
+  --color-primary-soft-pressed: hsl(313 55% 89%);
+  --color-primary-ink: hsl(310 70% 22%);
+  --color-primary-ring: hsl(310 93% 34% / 0.22);
+  --color-on-primary: #ffffff;
+  --color-accent: hsl(35 100% 55%);
+  --color-accent-soft: hsl(38 100% 93%);
+  --color-accent-ink: hsl(28 85% 16%);
+  --color-bg: hsl(0 0% 98%);
+  --color-surface: #ffffff;
+  --color-muted: hsl(240 5% 96%);
+  --color-muted-2: hsl(240 5% 93%);
+  --color-text: hsl(240 6% 10%);
+  --color-text-2: hsl(240 4% 46%);
+  --color-text-3: hsl(240 4% 62%);
+  --color-border: hsl(240 6% 90%);
+  --color-border-strong: hsl(240 5% 82%);
+  --color-success: hsl(157 78% 27%);
+  --color-success-soft: hsl(152 55% 94%);
+  --color-success-ink: hsl(157 78% 18%);
+  --color-danger: hsl(0 74% 51%);
+  --color-danger-hover: hsl(0 74% 44%);
+  --color-danger-soft: hsl(0 86% 97%);
+  --color-danger-ink: hsl(0 70% 32%);
+  --color-neutral-ink: hsl(240 5% 32%);
+  --color-warn-icon: hsl(30 90% 38%);
+
+  --radius-ctl: 8px;
+  --radius-card: 12px;
+  --radius-ticket: 14px;
+  --radius-dialog: 18px;
+  --radius-panel: 22px;
+
+  --shadow-sm: 0 1px 2px hsl(240 6% 10% / 0.05);
+  --shadow-md: 0 6px 16px -4px hsl(240 6% 10% / 0.1), 0 2px 4px hsl(240 6% 10% / 0.04);
+  --shadow-lg: 0 18px 40px -12px hsl(240 6% 10% / 0.22);
+}
+
+@layer base {
+  body {
+    @apply bg-bg text-text font-sans text-base leading-relaxed antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+
+  a {
+    @apply text-primary hover:text-primary-pressed;
+  }
+}

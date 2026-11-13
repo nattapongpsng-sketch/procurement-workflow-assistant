@@ -1,0 +1,80 @@
+<% content_for :title, @workflow.name %>
+
+<%= link_to "← กลับไปผลการค้นหา", root_path, class: "self-start text-sm text-text-2 no-underline hover:text-text" %>
+
+<header class="flex flex-col gap-2">
+  <div class="flex flex-wrap gap-2">
+    <%= render BadgeComponent.new("วิธี#{@workflow.procurement_method}", tone: :primary) if @workflow.procurement_method %>
+    <%= render BadgeComponent.new("เวอร์ชัน #{@workflow.version}", tone: :outline) %>
+  </div>
+  <h1 class="text-[28px] font-bold leading-tight sm:text-[32px]"><%= @workflow.name %></h1>
+  <p class="text-[15px] text-text-2"><%= @workflow.description %></p>
+</header>
+
+<div class="flex flex-col gap-8 lg:flex-row lg:items-start">
+  <section aria-labelledby="steps-heading" class="flex flex-1 flex-col gap-3">
+    <h2 id="steps-heading" class="text-xl font-semibold">ขั้นตอนทั้งหมด (<%= @workflow.workflow_steps.size %> ขั้น)</h2>
+    <ol class="flex flex-col gap-3">
+      <% @workflow.workflow_steps.each do |step| %>
+        <li class="flex gap-4 rounded-card border border-border bg-surface p-4">
+          <span class="grid size-8 shrink-0 place-items-center rounded-full bg-primary-soft text-sm font-semibold text-primary"><%= step.position %></span>
+          <div class="flex flex-col gap-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <h3 class="font-semibold"><%= step.title %></h3>
+              <%= render BadgeComponent.new("รอยืนยันกับเจ้าหน้าที่พัสดุ", tone: :future) unless step.confirmed %>
+            </div>
+            <p class="text-sm text-text-2"><%= step.description %></p>
+            <% if step.actor_role %>
+              <p class="text-[13px] text-text-2">ผู้ทำ: <%= step.actor_label %></p>
+            <% end %>
+            <% if step.required_attachments.any? %>
+              <p class="text-[13px] text-text-2">ต้องแนบ: <%= step.required_attachments.join(" · ") %></p>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ol>
+  </section>
+
+  <aside aria-labelledby="summary-heading" class="flex flex-col gap-4 rounded-panel border border-border bg-surface p-6 shadow-md lg:sticky lg:top-24 lg:w-[380px]">
+    <h2 id="summary-heading" class="text-lg font-semibold">สรุป workflow</h2>
+    <dl class="flex flex-col gap-2 text-sm">
+      <div class="flex justify-between gap-4"><dt class="text-text-2">วิธีจัดซื้อ</dt><dd><%= @workflow.procurement_method %></dd></div>
+      <% if (max = @workflow.summary["max_amount"]) %>
+        <div class="flex justify-between gap-4"><dt class="text-text-2">วงเงินสูงสุด</dt><dd><%= Thai.money(max).delete_suffix(".-") %> บาท</dd></div>
+      <% end %>
+      <% if @workflow.summary["approver"] %>
+        <div class="flex justify-between gap-4"><dt class="text-text-2">ผู้อนุมัติ</dt><dd><%= @workflow.summary["approver"] %></dd></div>
+      <% end %>
+      <% if @workflow.summary["criteria"] %>
+        <div class="flex justify-between gap-4"><dt class="text-text-2">เกณฑ์คัดเลือก</dt><dd><%= @workflow.summary["criteria"] %></dd></div>
+      <% end %>
+    </dl>
+    <div class="flex flex-col gap-1 text-sm">
+      <p class="font-semibold">เงื่อนไขที่ระบบจะตรวจให้</p>
+      <ul class="list-disc pl-5 text-text-2">
+        <% @workflow.eligibility_rules.each do |rule| %>
+          <li><%= rule["title"] %></li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="flex flex-col gap-1 text-sm">
+      <p class="font-semibold">ข้อกฎหมายและระเบียบ</p>
+      <ul class="list-disc pl-5 text-text-2">
+        <% @workflow.legal_basis.each do |basis| %>
+          <li><%= basis %></li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="flex flex-col gap-1 text-sm">
+      <p class="font-semibold">เอกสารที่ระบบสร้างให้</p>
+      <ul class="list-disc pl-5 text-text-2">
+        <% @workflow.document_templates.each do |document| %>
+          <li><%= document.name %> (.docx)</li>
+        <% end %>
+      </ul>
+    </div>
+    <%= render ButtonComponent.new("สร้างเรื่องจาก Template", size: :lg, disabled: true, class: "w-full") %>
+    <p class="text-[13px] text-text-2">การสร้างเรื่องและกรอกข้อมูลเปิดใช้ใน Milestone 1</p>
+  </aside>
+</div>

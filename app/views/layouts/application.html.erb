@@ -1,30 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
   <head>
-    <title><%= content_for(:title) || "Workflow" %></title>
+    <title><%= [ content_for(:title), "จัดซื้อง่าย" ].compact.join(" · ") %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Workflow">
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="จัดซื้อง่าย">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <%# Google Fonts per the UI canvas; self-host if the PEA network blocks it (OPEN_QUESTIONS Q23). %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+    <%= render AppHeaderComponent.new(current: content_for(:nav) || "search") %>
+    <main class="mx-auto flex max-w-[1200px] flex-col gap-6 px-4 pt-6 pb-16 sm:px-6">
       <%= yield %>
     </main>
   </body>
