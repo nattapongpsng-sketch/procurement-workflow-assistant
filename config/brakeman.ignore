@@ -1,0 +1,28 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "File Access",
+      "warning_code": 16,
+      "fingerprint": "366fe3dfded2e01ae4c4bc20f1aab558507b1585605be14dfcd4d821c57e7742",
+      "check_name": "FileAccess",
+      "message": "Model attribute used in file name",
+      "file": "app/services/seed_loader.rb",
+      "line": 62,
+      "link": "https://brakemanscanner.org/docs/warning_types/file_access/",
+      "code": "File.open(DocumentTemplate.find_or_initialize_by(:code => attrs.fetch(\"code\"), :version => attrs.fetch(\"version\")).source_path)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "SeedLoader",
+        "method": "load_document_templates"
+      },
+      "user_input": "DocumentTemplate.find_or_initialize_by(:code => attrs.fetch(\"code\"), :version => attrs.fetch(\"version\")).source_path",
+      "confidence": "Medium",
+      "cwe_id": [
+        22
+      ],
+      "note": "template_path is validated as a bare *.docx name (DocumentTemplate) and source_path resolves it from the app/templates/docx directory listing, never by joining it into a path. Values come from db/seeds/documents.yml, not from users."
+    }
+  ],
+  "brakeman_version": "8.1.0"
+}

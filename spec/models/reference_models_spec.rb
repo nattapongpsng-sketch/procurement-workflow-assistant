@@ -39,3 +39,11 @@ RSpec.describe "reference data" do
     end
   end
 end
+
+RSpec.describe DocumentTemplate do
+  it "only accepts bare .docx file names inside app/templates/docx" do
+    expect(build(:document_template, template_path: "purchase_request.docx")).to be_valid
+    expect(build(:document_template, template_path: "../config/master.key")).not_to be_valid
+    expect(build(:document_template, template_path: "missing.docx")).not_to be_valid
+  end
+end

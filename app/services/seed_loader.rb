@@ -47,18 +47,19 @@ class SeedLoader
     yaml("documents.yml").each do |attrs|
       template = DocumentTemplate.find_or_initialize_by(code: attrs.fetch("code"), version: attrs.fetch("version"))
       template.assign_attributes(attrs.slice("name", "description", "template_path"))
-      checksum = Digest::SHA256.file(template.source_path).hexdigest
+      path = template.source_path or raise WorkflowLoader::Error, "ไม่พบไฟล์ template #{template.template_path}"
+      checksum = Digest::SHA256.file(path).hexdigest
       if template.persisted? && template.checksum != checksum && template.generated_documents.exists?
         raise WorkflowLoader::Error, "#{template.code} v#{template.version} ถูกใช้สร้างเอกสารแล้ว แก้ไฟล์ต้องสร้างเวอร์ชันใหม่"
       end
 
-      template.field_keys = DocxFields.paths(template.source_path)
+      template.field_keys = DocxFields.paths(path)
       attach_needed = template.checksum != checksum || !template.docx_file.attached?
       template.checksum = checksum
       template.save!
       next unless attach_needed
 
-      template.docx_file.attach(io: File.open(template.source_path), filename: File.basename(template.template_path),
+      template.docx_file.attach(io: File.open(path), filename: path.basename.to_s,
                                 content_type: DOCX_TYPE)
     end
   end

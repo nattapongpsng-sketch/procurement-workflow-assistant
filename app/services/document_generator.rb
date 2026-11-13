@@ -37,7 +37,7 @@ class DocumentGenerator
       document_template.docx_file.open { |file| Sablon.template(file.path).render_to_string(context) }
     else
       path = document_template.source_path
-      raise Error, "ไม่พบไฟล์ template #{path}" unless File.file?(path)
+      raise Error, "ไม่พบไฟล์ template #{document_template.template_path}" unless path
 
       Sablon.template(path.to_s).render_to_string(context)
     end
