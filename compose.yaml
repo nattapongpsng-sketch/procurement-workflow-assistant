@@ -1,0 +1,40 @@
+# Development environment: `docker compose up` then open http://localhost:3000
+# SQLite databases and Active Storage files live in the `storage` volume.
+x-app: &app
+  build:
+    context: .
+    dockerfile: Dockerfile.dev
+  env_file:
+    - path: .env
+      required: false
+  volumes:
+    - .:/rails
+    - storage:/rails/storage
+    - bundle:/usr/local/bundle
+
+services:
+  web:
+    <<: *app
+    command: bash -c "bundle check || bundle install; bin/rails db:prepare && bin/rails db:seed && rm -f tmp/pids/server.pid && bin/rails server -b 0.0.0.0"
+    ports:
+      - "${PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3000/up"]
+      interval: 10s
+      retries: 12
+
+  css:
+    <<: *app
+    command: bin/rails tailwindcss:watch[always]
+    tty: true
+
+  jobs:
+    <<: *app
+    command: bin/jobs
+    depends_on:
+      web:
+        condition: service_healthy
+
+volumes:
+  storage:
+  bundle:

@@ -39,3 +39,4 @@
 
 # Real sample documents contain personal data (names, employee IDs, signatures) — keep local only. See docs/OPEN_QUESTIONS.md Q20.
 /docs/samples/
+!/.env.example
