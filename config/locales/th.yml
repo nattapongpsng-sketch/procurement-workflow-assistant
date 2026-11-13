@@ -1,0 +1,8 @@
+th:
+  roles:
+    requester: ผู้ขอซื้อ
+    approver: ผู้อนุมัติ
+    inspector: ผู้ตรวจรับ
+    borrower: ผู้ยืมเงิน
+    finance: หน่วยการเงิน
+    organization: หน่วยงาน
