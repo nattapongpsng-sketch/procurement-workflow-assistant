@@ -1,0 +1,24 @@
+# ชื่อบุคคลสมมติทั้งหมด (ห้ามใส่ชื่อจริงหรือรหัสพนักงานจริงจนกว่าจะได้รับอนุญาต)
+# ตำแหน่งย่อ/ระดับเลียนแบบรูปแบบในเอกสารตัวอย่าง
+- employee_code: "900001"
+  title_prefix: นาย
+  full_name: สมชาย ตัวอย่าง
+  position_short: วศก.5 (ฉ)
+  unit_code: สชก.(บก-ท)
+- employee_code: "900002"
+  title_prefix: นาย
+  full_name: วิชัย ทดลองดี
+  position_short: พชง.6 (ฉ)
+  unit_code: สชก.(บก-ท)
+- employee_code: "900003"
+  title_prefix: นางสาว
+  full_name: สมหญิง สมมติ
+  position_short: อก.(ฉ)
+  position_en: Thai Skill BD Lead
+  unit_code: สชก.(บก-ท)
+- employee_code: "900004"
+  title_prefix: นาย
+  full_name: ประเสริฐ ตั้งใจ
+  position_short: ผชก.(บก-ท)
+  position_en: Thai Skill BD Head
+  unit_code: สชก.(บก-ท)

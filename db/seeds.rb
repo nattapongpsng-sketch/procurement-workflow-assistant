@@ -1,9 +1,9 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+# Loads reference data, document templates and workflows from db/seeds/**.yml.
+# Idempotent — run `bin/rails db:seed` as often as you like.
+workflows = SeedLoader.call
+
+puts "Recommended AI: #{RecommendedAi.count} · People: #{Person.count} · Budget sources: #{BudgetSource.count}"
+puts "Document templates: #{DocumentTemplate.pluck(:code, :version).map { |c, v| "#{c} v#{v}" }.join(', ')}"
+workflows.each do |w|
+  puts "Workflow: #{w.code} v#{w.version} (#{w.status}) — #{w.workflow_steps.count} steps, #{w.field_definitions.count} fields"
+end

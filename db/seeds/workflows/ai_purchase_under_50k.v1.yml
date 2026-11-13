@@ -1,0 +1,525 @@
+# Workflow แรก: จัดซื้อโปรแกรม AI วงเงินไม่เกิน 50,000 บาท (วิธีเฉพาะเจาะจง)
+# แหล่งข้อมูล: docs/DOMAIN.md — เวอร์ชันที่ published แล้วห้ามแก้ ให้สร้างไฟล์ v2 แทน
+code: ai_purchase_under_50k
+version: 1
+status: published
+name: จัดซื้อโปรแกรม AI วงเงินไม่เกิน 50,000 บาท (วิธีเฉพาะเจาะจง)
+description: >-
+  สำหรับจัดซื้อสิทธิการใช้งานโปรแกรม AI ที่อยู่ใน Recommended List ของ กฟภ.
+  วงเงินไม่เกิน 50,000 บาท หน่วยงานดำเนินการจัดหาเองได้ด้วยวิธีเฉพาะเจาะจง
+category: software_ai
+procurement_method: เฉพาะเจาะจง
+keywords: [AI, ปัญญาประดิษฐ์, โปรแกรม AI, ซอฟต์แวร์, software, license, ไลเซนส์, สิทธิการใช้งาน,
+           Claude, ChatGPT, Copilot, Gemini, Canva, จัดซื้อ, ซื้อ, เฉพาะเจาะจง]
+legal_basis:
+  - พ.ร.บ. การจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ. 2560 มาตรา 56(2)(ข)
+  - ระเบียบกระทรวงการคลังว่าด้วยการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ. 2560 ข้อ 79
+  - อนุมัติ ผวก. ลงวันที่ 8 เมษายน 2569 (กดท.(ก) 148/2569) กระบวนการจัดหาโปรแกรม AI
+summary:
+  max_amount: 50000
+  approver: ผชก.
+  criteria: เกณฑ์ราคา
+  legal_short: ม.56(2)(ข) · ข้อ 79
+
+eligibility_rules:
+  - id: in_recommended_list
+    title: โปรแกรม AI อยู่ใน Recommended List ของ กฟภ.
+    check: { in_reference: { field: item.ai_product, table: recommended_ai } }
+    pass: { message: โปรแกรมนี้อยู่ใน Recommended List ตามอนุมัติ ผวก. 8 เม.ย. 2569 }
+    fail:
+      reason: >-
+        โปรแกรมนี้ไม่อยู่ใน Recommended List ต้องจัดทำข้อมูลคุณสมบัติของ AI ส่งให้ กวบ. ฝพจ. สายงาน ดส.
+        พิจารณาความสอดคล้องก่อนเริ่มจัดหา
+      alternatives: [ai_not_in_recommended_list]
+  - id: max_50k
+    title: วงเงินไม่เกิน 50,000 บาท
+    check: { lte: [budget.total, 50000] }
+    pass: { message: วงเงินไม่เกิน 50,000 บาท หน่วยงานดำเนินการจัดหาเองได้ }
+    fail:
+      reason: >-
+        วงเงินเกิน 50,000 บาท ต้องจัดทำเอกสารขอความเห็นชอบโครงการจัดหาระบบคอมพิวเตอร์
+        เสนอคณะกรรมการบริหารและจัดหาระบบคอมพิวเตอร์ของ กฟภ. ก่อนจัดหา
+      alternatives: [ai_purchase_over_50k]
+  - id: specific_method_limit
+    title: วงเงินไม่เกิน 500,000 บาท (ใช้วิธีเฉพาะเจาะจงได้)
+    check: { lte: [budget.total, 500000] }
+    pass: { message: ใช้วิธีเฉพาะเจาะจงตามมาตรา 56(2)(ข) ได้ }
+    fail:
+      reason: วงเงินเกิน 500,000 บาท ใช้วิธีเฉพาะเจาะจงตามมาตรา 56(2)(ข) ไม่ได้ ต้องใช้วิธีจัดซื้ออื่น
+      alternatives: []
+  - id: has_budget_source
+    title: มีแหล่งงบประมาณรองรับ
+    check: { present: budget.source }
+    pass: { message: ระบุแหล่งงบประมาณแล้ว }
+    fail:
+      reason: ยังไม่ได้เลือกแหล่งงบประมาณ ต้องมีหนังสือแจ้งกรอบงบประมาณก่อนขออนุมัติ
+      alternatives: []
+
+field_groups:
+  - key: item
+    label: ข้อมูลพัสดุและเหตุผล
+    description: ใช้ในชื่อเรื่อง ย่อหน้าแรก ข้อ 1 เหตุผล และข้อ 2 รายละเอียดพัสดุ
+  - key: purpose
+    label: วัตถุประสงค์และกำหนดใช้
+    description: ใช้ในข้อ 1 เหตุผลความจำเป็น และข้อ 5 กำหนดเวลาที่ต้องการใช้พัสดุ
+  - key: price
+    label: ราคากลางและงบประมาณ
+    description: ใช้ในข้อ 3 ราคากลาง ข้อ 4 วงเงินที่จะซื้อ และรายงานผลการพิจารณา
+  - key: people
+    label: ผู้ตรวจรับ ผู้อนุมัติ และผู้ยืมเงิน
+    description: ชื่อและตำแหน่งจะไปอยู่ในข้อ 8 ข้อเสนออื่น ๆ และช่องลงนามของทุกเอกสาร
+  - key: letter
+    label: หัวหนังสือ เลขที่ และวันที่
+    description: ข้อมูลหน่วยงานในหัวหนังสือ เลขที่และวันที่กรอกภายหลังได้เมื่อลงทะเบียนส่งเรื่อง
+
+fields:
+  # ── ข้อมูลพัสดุและเหตุผล ─────────────────────────────
+  - key: item.ai_product
+    group: item
+    label: โปรแกรม AI ที่ต้องการ
+    type: reference
+    required: true
+    options: { table: recommended_ai }
+    help: เลือกจาก Recommended List ที่ กฟภ. อนุญาตให้จัดหาได้ ถ้าไม่มีในรายการ workflow นี้ใช้ไม่ได้
+    example: Claude (Anthropic PBC)
+    why: ระบบใช้ตรวจว่าจัดหาได้ตามอนุมัติ ผวก. หรือไม่
+  - key: item.name
+    group: item
+    label: ชื่อพัสดุ
+    type: text
+    required: true
+    help: ชื่อสิทธิการใช้งานตามที่ผู้ขายเรียก รวมแผนและรอบการชำระเงิน ยังไม่ต้องใส่จำนวน
+    example: สิทธิการใช้งาน Software Claude Pro (Annual) แบบรายปี
+    why: ใช้เป็นชื่อเรื่องและรายละเอียดพัสดุในทุกเอกสาร
+  - key: item.quantity
+    group: item
+    label: จำนวน
+    type: number
+    required: true
+    options: { default: 1 }
+    validation: { min: 1, integer: true }
+    help: จำนวนสิทธิการใช้งานที่ต้องการซื้อ
+    example: "1"
+    why: ใช้คำนวณวงเงินรวม และระบุในชื่อเรื่อง
+  - key: item.unit
+    group: item
+    label: หน่วยนับ
+    type: text
+    required: true
+    options: { default: License }
+    help: หน่วยนับของพัสดุ สำหรับโปรแกรมมักใช้ License
+    example: License
+    why: ต่อท้ายจำนวนในชื่อเรื่องและรายละเอียดพัสดุ
+  - key: item.line
+    group: item
+    label: พัสดุและจำนวน
+    type: text
+    computed: { fn: concat, args: [item.name, { value: " จำนวน " }, item.quantity, { value: " " }, item.unit] }
+  - key: item.spec_detail
+    group: item
+    label: รายละเอียด/คุณลักษณะเฉพาะเพิ่มเติม (ถ้ามี)
+    type: longtext
+    help: เว้นว่างได้ ระบบจะใช้ชื่อพัสดุและจำนวนเป็นรายละเอียดแทน
+    example: สิทธิการใช้งาน Software Claude Pro (Annual) แบบรายปี จำนวน 1 License
+    why: ข้อ 2 ของรายงานขอซื้อต้องระบุรายละเอียดหรือคุณลักษณะเฉพาะของพัสดุ
+  - key: item.spec
+    group: item
+    label: รายละเอียด/คุณลักษณะเฉพาะ
+    type: longtext
+    computed: { fn: first_present, args: [item.spec_detail, item.line] }
+  - key: request.subject
+    group: item
+    label: เรื่อง (รายงานขอซื้อ)
+    type: text
+    computed: { fn: concat, args: [{ value: รายงานขอซื้อขอจ้างจัดซื้อ }, item.line] }
+  - key: justification.background
+    group: item
+    label: อนุมัติหรือเรื่องเดิมที่เกี่ยวข้อง
+    type: longtext
+    required: true
+    help: >-
+      อ้างอนุมัติที่ทำให้หน่วยงานมีภารกิจนี้ ระบุผู้อนุมัติ วันที่ เลขที่หนังสือ และสรุปสาระ
+      ระบบจะต่อท้ายด้วยข้อความเรื่องกรอบงบประมาณให้อัตโนมัติ
+    example: >-
+      ตามอนุมัติ ผวก. ลงวันที่ 12 มิถุนายน 2569 (หนังสือ กธน. เลขที่ กธน.(วน) 496/2569 ลงวันที่ 20 พฤษภาคม 2569)
+      อนุมัติเปลี่ยนแปลงหน่วยงานดำเนินธุรกิจ ...
+    why: ข้อ 1 เหตุผลความจำเป็น ต้องแสดงที่มาว่าทำไมหน่วยงานต้องจัดซื้อ
+
+  # ── วัตถุประสงค์และกำหนดใช้ ───────────────────────────
+  - key: justification.quantity_note
+    group: purpose
+    label: เหตุผลของจำนวนที่ซื้อ
+    type: text
+    required: true
+    options: { default: ตามความต้องการใช้งานในปัจจุบัน }
+    help: อธิบายสั้น ๆ ว่าทำไมต้องซื้อจำนวนนี้
+    example: ตามความต้องการใช้งานในปัจจุบัน
+    why: แสดงในวงเล็บต่อจากจำนวนในข้อ 1 ให้ผู้อนุมัติเห็นว่าไม่ซื้อเกินความจำเป็น
+  - key: justification.purpose
+    group: purpose
+    label: วัตถุประสงค์ในการจัดซื้อ
+    type: longtext
+    required: true
+    help: เขียนว่าจะนำไปใช้ทำอะไร ช่วยงานอะไร และเกิดประโยชน์อย่างไร 2–4 ประโยค ขึ้นต้นด้วย "เพื่อ"
+    example: เพื่อนำมาใช้เป็นเครื่องมือช่วยลดภาระงานเอกสารของบุคลากร ...
+    why: ข้อ 1 เหตุผลความจำเป็น เป็นส่วนที่ผู้อนุมัติใช้ตัดสินใจ
+  - key: schedule.need_by_date
+    group: purpose
+    label: วันที่ต้องการใช้พัสดุ
+    type: date
+    required: true
+    help: วันที่ต้องเริ่มใช้งาน ควรอยู่หลังวันที่คาดว่าจะได้รับอนุมัติ
+    example: 15 ก.ย. 2569
+    why: ข้อ 5 กำหนดเวลาที่ต้องการใช้พัสดุ (ระเบียบกำหนดให้ระบุ)
+  - key: schedule.need_by_date_text
+    group: purpose
+    label: วันที่ต้องการใช้พัสดุ (ข้อความ)
+    type: text
+    computed: { fn: thai_date, args: [schedule.need_by_date] }
+
+  # ── ราคากลางและงบประมาณ ─────────────────────────────
+  - key: price.currency
+    group: price
+    label: สกุลเงินของราคาที่สืบได้
+    type: select
+    required: true
+    options: { default: THB, choices: [THB, USD] }
+    help: เลือก THB ถ้าหน้าราคาแสดงเป็นบาท เลือก USD ถ้าแสดงเป็นดอลลาร์ (ต้องระบุอัตราแลกเปลี่ยน)
+    example: THB
+    why: กำหนดว่าระบบจะคำนวณราคาบาทอย่างไร และต้องแสดงข้อความอัตราแลกเปลี่ยนในข้อ 3 หรือไม่
+  - key: price.thb_amount
+    group: price
+    label: ราคาต่อหน่วย (บาท รวม VAT)
+    type: money
+    validation: { required_if: { field: price.currency, eq: THB }, min: 0 }
+    help: ราคาบาทตามหน้าราคาบนเว็บไซต์ทางการของผู้ขาย ณ วันที่สืบราคา
+    example: "7990"
+    why: เป็นฐานของราคากลางและวงเงินที่จะซื้อ
+  - key: price.foreign_amount
+    group: price
+    label: ราคาต่อหน่วย (USD)
+    type: money
+    validation: { required_if: { field: price.currency, eq: USD }, min: 0 }
+    help: ราคาดอลลาร์ตามหน้าราคา เช่น 200 สำหรับแผนรายปีที่จ่ายล่วงหน้า $200
+    example: "200"
+    why: ใช้คำนวณราคาบาท และแสดงในข้อ 3 ว่าคิดจากราคาดอลลาร์เท่าไร
+  - key: price.exchange_rate
+    group: price
+    label: อัตราแลกเปลี่ยน (บาทต่อ 1 USD)
+    type: number
+    validation: { required_if: { field: price.currency, eq: USD }, min: 0 }
+    help: อัตราแลกเปลี่ยนที่ใช้คำนวณ ควรระบุแหล่งที่มา (ดู OPEN_QUESTIONS Q3)
+    example: "34"
+    why: ราคาบาท = ราคา USD × อัตราแลกเปลี่ยน ระบบคำนวณให้ ห้ามพิมพ์ราคาบาทเอง
+  - key: price.converted_amount
+    group: price
+    label: ราคาบาทที่แปลงจาก USD
+    type: money
+    computed: { fn: multiply, args: [price.foreign_amount, price.exchange_rate] }
+  - key: price.unit_price
+    group: price
+    label: ราคาต่อหน่วย (บาท)
+    type: money
+    computed: { fn: first_present, args: [price.converted_amount, price.thb_amount] }
+  - key: price.usd_clause
+    group: price
+    label: ข้อความอัตราแลกเปลี่ยน
+    type: text
+    computed:
+      fn: concat
+      args: [{ value: " (" }, price.foreign_amount, { value: " USD โดยคิด 1 USD = " }, price.exchange_rate, { value: " บาท)" }]
+  - key: price.reference_source
+    group: price
+    label: ที่มาของราคากลาง
+    type: select
+    required: true
+    options:
+      default: ราคาที่ได้มาจากการสืบราคาจากท้องตลาด
+      choices: [ราคาที่ได้มาจากการสืบราคาจากท้องตลาด]
+    help: วิธีที่ได้ราคากลางมา สำหรับโปรแกรม AI ใช้การสืบราคาจากหน้าราคาบนเว็บไซต์ทางการ
+    example: ราคาที่ได้มาจากการสืบราคาจากท้องตลาด
+    why: ข้อ 3 ราคากลาง ต้องบอกที่มาของราคา
+  - key: price.reference_total
+    group: price
+    label: ราคากลาง
+    type: money
+    computed: { fn: multiply, args: [price.unit_price, item.quantity] }
+  - key: price.reference_money
+    group: price
+    label: ราคากลาง (รูปแบบเงิน)
+    type: text
+    computed: { fn: money, args: [price.reference_total] }
+  - key: price.reference_text
+    group: price
+    label: ราคากลาง (ตัวอักษร)
+    type: text
+    computed: { fn: baht_text, args: [price.reference_total] }
+  - key: price.source_url
+    group: price
+    label: ลิงก์หน้าราคา
+    type: text
+    required: true
+    validation: { format: url }
+    help: ลิงก์หน้าราคาบนเว็บไซต์ทางการของผู้ขาย
+    example: https://claude.com/pricing
+    why: รายงานผลการพิจารณาต้องอ้างแหล่งราคาที่ตรวจสอบได้
+  - key: price.survey_date
+    group: price
+    label: วันที่สืบราคา
+    type: date
+    required: true
+    help: วันที่บันทึกภาพหน้าราคา ต้องตรงกับวันที่ในภาพหน้าจอ
+    example: 17 ก.ค. 2569
+    why: รายงานผลการพิจารณาต้องระบุวันที่สืบราคา และราคาเว็บไซต์เปลี่ยนได้ตลอด
+  - key: price.survey_date_text
+    group: price
+    label: วันที่สืบราคา (ข้อความ)
+    type: text
+    computed: { fn: thai_date, args: [price.survey_date] }
+  - key: price.evidence
+    group: price
+    label: ภาพหน้าราคา (เอกสารแนบ 3)
+    type: file
+    required: true
+    options: { accept: [image/png, image/jpeg] }
+    help: ภาพหน้าจอหน้าราคาที่เห็นราคา แผน และวันที่ชัดเจน
+    example: claude-pricing-17-07-2569.png
+    why: เป็นหลักฐานการสืบราคา ระบบใส่ภาพนี้ท้ายรายงานขอซื้อให้
+  - key: budget.total
+    group: price
+    label: วงเงินที่จะซื้อ
+    type: money
+    computed: { fn: multiply, args: [price.unit_price, item.quantity] }
+  - key: budget.total_money
+    group: price
+    label: วงเงินที่จะซื้อ (รูปแบบเงิน)
+    type: text
+    computed: { fn: money, args: [budget.total] }
+  - key: budget.total_text
+    group: price
+    label: วงเงินที่จะซื้อ (ตัวอักษร)
+    type: text
+    computed: { fn: baht_text, args: [budget.total] }
+  - key: budget.source
+    group: price
+    label: แหล่งงบประมาณ
+    type: reference
+    required: true
+    options: { table: budget_source }
+    help: เลือกหนังสือแจ้งกรอบงบประมาณที่จะใช้ ระบบจะเติมบัญชีและศูนย์ต้นทุนให้
+    example: กนว.(พน.)1182/2569 · งบทำการปี 2569 ของ กนว.
+    why: ข้อ 1 และข้อ 4 ต้องระบุแหล่งงบ บัญชี และศูนย์ต้นทุน และใช้ต่อในใบสำคัญจ่ายเงินยืม
+
+  # ── บุคคล ──────────────────────────────────────────
+  - key: people.requester
+    group: people
+    label: ผู้เสนอเรื่อง
+    type: person
+    required: true
+    help: ผู้ลงนามเสนอรายงาน (ช่องลงนามซ้าย) มักเป็นหัวหน้าทีมหรือผู้อำนวยการกองของผู้ขอซื้อ
+    example: BD Lead ของหน่วยงาน
+    why: ชื่อและตำแหน่งจะอยู่ในช่องลงนามของรายงานขอซื้อและรายงานผล
+  - key: people.negotiator
+    group: people
+    label: ผู้ติดต่อตกลงราคากับผู้ขาย
+    type: person
+    required: true
+    help: คนที่ติดต่อผู้ขายและดำเนินการซื้อ มักเป็นคนเดียวกับผู้ยืมเงิน
+    example: นายสมชาย ตัวอย่าง วศก.5 (ฉ)
+    why: ข้อ 8.1 ต้องระบุผู้ติดต่อตกลงราคาสำหรับวิธีเฉพาะเจาะจง
+  - key: people.inspectors
+    group: people
+    label: ผู้ตรวจรับพัสดุ
+    type: list
+    required: true
+    options: { of: person, min: 1 }
+    help: >-
+      คนที่จะตรวจว่าได้รับสิทธิการใช้งานครบถูกต้อง ต้องไม่ใช่คนเดียวกับผู้ติดต่อตกลงราคา
+      ตัวอย่างจริงใช้ 1 คน (ดู OPEN_QUESTIONS Q12 เรื่องคณะกรรมการ)
+    example: นายวิชัย ทดลองดี พชง.6 (ฉ)
+    why: ข้อ 8.2 และข้อเสนอข้อ 2) ขออนุมัติแต่งตั้งผู้ตรวจรับพร้อมกับรายงานขอซื้อ
+  - key: people.borrower
+    group: people
+    label: ผู้ยืมเงิน
+    type: person
+    required: true
+    help: คนที่ยืมเงินจากหน่วยการเงินไปชำระค่าสิทธิการใช้งาน ต้องมีรหัสพนักงาน
+    example: นายสมชาย ตัวอย่าง วศก.5 (ฉ)
+    why: ข้อ 8.3 รายงานผลการพิจารณา และใบสำคัญจ่ายเงินยืมใช้ชื่อนี้
+  - key: loan.lender_unit
+    group: people
+    label: ยืมเงินจากหน่วยงาน
+    type: text
+    required: true
+    options: { default: กกง. }
+    help: หน่วยงานการเงินที่ให้ยืมเงิน
+    example: กกง.
+    why: ข้อ 8.3 และรายงานผลระบุว่ายืมเงินจากหน่วยงานใด
+  - key: people.approver
+    group: people
+    label: ผู้อนุมัติ
+    type: person
+    required: true
+    help: ผู้มีอำนาจอนุมัติตามวงเงิน สำหรับตัวอย่างนี้คือ ผชก. ของหน่วยงาน (ช่องลงนามขวา)
+    example: ผชก.(บก-ท)
+    why: ชื่อและตำแหน่งอยู่ในช่องลงนามอนุมัติของรายงานขอซื้อและรายงานผล
+
+  # ── หัวหนังสือ เลขที่ และวันที่ ───────────────────────
+  - key: org.unit_name
+    group: letter
+    label: ชื่อหน่วยงานผู้เสนอ
+    type: text
+    required: true
+    help: ชื่อหน่วยงานในช่อง "จาก" และท้ายหนังสือ
+    example: Thai Skill Unit
+    why: หัวหนังสือราชการต้องระบุหน่วยงานเจ้าของเรื่อง
+  - key: org.unit_short
+    group: letter
+    label: ชื่อหน่วยงานแบบสั้น (ในเนื้อความ)
+    type: text
+    required: true
+    help: ชื่อที่ใช้ในประโยค "ด้วย ... มีความประสงค์"
+    example: Thai Skill
+    why: ใช้ในย่อหน้าแรกและข้อ 1 ของรายงานขอซื้อ
+  - key: org.unit_code
+    group: letter
+    label: รหัสหน่วยงาน
+    type: text
+    required: true
+    help: ตัวย่อหน่วยงานที่ใช้ในเลขที่หนังสือ
+    example: สชก.(บก-ท)
+    why: ใช้ในช่อง "จาก" และเลขที่หนังสือ
+  - key: org.to
+    group: letter
+    label: ถึง
+    type: text
+    required: true
+    help: หน่วยงานที่รับเรื่อง
+    example: สชก.(บก-ท)
+    why: ช่อง "ถึง" ในหัวหนังสือ
+  - key: org.addressee
+    group: letter
+    label: เรียน
+    type: text
+    required: true
+    help: ตำแหน่งย่อของผู้อนุมัติที่เรียนถึง
+    example: ผชก.(บก.ท)
+    why: ช่อง "เรียน" ในหัวหนังสือ
+  - key: org.phone
+    group: letter
+    label: เบอร์โทรติดต่อ
+    type: text
+    required: true
+    help: เบอร์ภายในของผู้จัดทำเรื่อง
+    example: "6682"
+    why: พิมพ์ท้ายหนังสือให้ผู้อนุมัติติดต่อกลับได้
+  - key: org.contact_label
+    group: letter
+    label: ชื่อผู้ประสานงาน (ท้ายหนังสือ)
+    type: text
+    help: ชื่อต้นหรือชื่อเล่นของผู้จัดทำ แสดงในวงเล็บต่อจากเบอร์โทร
+    example: สมชาย
+    why: ให้ผู้รับเรื่องรู้ว่าต้องติดต่อใคร
+  - key: request.doc_no
+    group: letter
+    label: เลขที่รายงานขอซื้อ
+    type: text
+    help: ได้หลังลงทะเบียนส่งเรื่อง เว้นว่างได้ ระบบจะเว้นช่องให้เขียนด้วยมือ
+    example: "617"
+    why: รายงานผลการพิจารณาและใบยืมเงินต้องอ้างเลขที่นี้
+  - key: request.doc_date
+    group: letter
+    label: วันที่รายงานขอซื้อ
+    type: date
+    help: วันที่ลงในหนังสือ เว้นว่างได้จนกว่าจะส่งเรื่อง
+    example: 15 ก.ค. 2569
+    why: รายงานผลการพิจารณาต้องอ้างวันที่นี้
+  - key: request.doc_date_text
+    group: letter
+    label: วันที่รายงานขอซื้อ (ข้อความ)
+    type: text
+    computed: { fn: thai_date, args: [request.doc_date] }
+  - key: request.year
+    group: letter
+    label: ปี พ.ศ. ของรายงานขอซื้อ
+    type: number
+    computed: { fn: buddhist_year_or_current, args: [request.doc_date] }
+  - key: request.doc_number
+    group: letter
+    label: เลขที่รายงานขอซื้อ (เต็ม)
+    type: text
+    computed: { fn: doc_number, args: [org.unit_code, request.doc_no, request.year] }
+  - key: result.doc_no
+    group: letter
+    label: เลขที่รายงานผลการพิจารณา
+    type: text
+    help: ได้หลังลงทะเบียนส่งเรื่อง เว้นว่างได้
+    example: "640"
+    why: หัวหนังสือรายงานผลการพิจารณา
+  - key: result.doc_date
+    group: letter
+    label: วันที่รายงานผลการพิจารณา
+    type: date
+    help: วันที่ลงในรายงานผล เว้นว่างได้จนกว่าจะส่งเรื่อง
+    example: 18 ก.ค. 2569
+    why: หัวหนังสือรายงานผลการพิจารณา
+  - key: vendor.name
+    group: price
+    label: ผู้ขาย
+    type: text
+    help: ชื่อบริษัทผู้ขาย (ดู OPEN_QUESTIONS Q7)
+    example: Anthropic PBC
+    why: รายงานผลการพิจารณาเสนอให้สั่งซื้อจากผู้ขายรายนี้
+
+steps:
+  - title: ตรวจเงื่อนไขการจัดหา
+    actor_role: requester
+    description: >-
+      ตรวจว่าโปรแกรม AI อยู่ใน Recommended List วงเงินไม่เกิน 50,000 บาท และมีงบประมาณรองรับ
+      ระบบตรวจให้จากข้อมูลที่กรอก
+    required_attachments: [Recommended List (อนุมัติ ผวก. 8 เม.ย. 2569), หนังสือแจ้งกรอบงบประมาณ]
+    tips: ถ้าไม่ผ่าน ระบบจะบอกเหตุผลและ workflow ที่ต้องใช้แทน
+  - title: สืบราคา
+    actor_role: requester
+    description: >-
+      ใช้ราคาจากหน้าราคาบนเว็บไซต์ทางการของผู้ขาย บันทึกภาพหน้าจอพร้อมวันที่
+      ถ้าเป็นเงินดอลลาร์ ให้ระบุอัตราแลกเปลี่ยนที่ใช้
+    output_documents: [ใบสืบราคา (ภาพหน้าราคา)]
+    required_attachments: [ภาพหน้าราคา (เอกสารแนบ 3)]
+    tips: ให้วันที่สืบราคาตรงกับวันที่ในภาพหน้าจอ
+  - title: จัดทำรายงานขอซื้อขอจ้าง
+    actor_role: requester
+    description: เสนอ ผชก. อนุมัติให้จัดซื้อตามมาตรา 56(2)(ข) และแต่งตั้งผู้ตรวจรับพัสดุ
+    output_documents: [purchase_request]
+    required_attachments: [เอกสารแนบ 1 หนังสือกรอบงบประมาณ, เอกสารแนบ 2 อนุมัติกระบวนการจัดหา AI, เอกสารแนบ 3 ใบสืบราคา]
+    tips: เลขที่และวันที่หนังสือเว้นไว้ได้ กรอกภายหลังแล้วสร้างเอกสารใหม่
+  - title: รายงานผลการพิจารณาและอนุมัติสั่งซื้อ
+    actor_role: requester
+    description: อ้างเลขที่และวันที่ของรายงานขอซื้อ เสนอ ผชก. ลงนามอนุมัติสั่งซื้อ และระบุผู้ยืมเงิน
+    output_documents: [result_report]
+    tips: ทำหลังรายงานขอซื้อได้เลขที่และอนุมัติแล้ว
+  - title: ยืมเงินจาก กกง.
+    actor_role: borrower
+    description: ทำใบสำคัญจ่ายเงินยืม แนบรายงานที่อนุมัติแล้วและเอกสารประกอบทั้งชุด
+    output_documents: [loan_voucher]
+    required_attachments: [รายงานขอซื้อขอจ้างที่อนุมัติแล้ว, หนังสือกรอบงบประมาณ, อนุมัติ ผวก. และหนังสือเวียน, Recommended List, ภาพหน้าราคา, ตารางคุมงบประมาณของทีม]
+  - title: ชำระเงินและซื้อสิทธิการใช้งาน
+    actor_role: borrower
+    description: ชำระเงินกับผู้ขาย เก็บใบเสร็จหรือ invoice ไว้ใช้ล้างเงินยืม
+    confirmed: false
+  - title: ตรวจรับพัสดุ
+    actor_role: inspector
+    description: ผู้ตรวจรับที่ได้รับแต่งตั้งในขั้นที่ 3 ตรวจว่าได้รับสิทธิการใช้งานครบถูกต้อง
+    confirmed: false
+  - title: ล้างเงินยืม
+    actor_role: borrower
+    description: ส่งใบเสร็จและเอกสารตรวจรับให้หน่วยการเงิน
+    confirmed: false
+  - title: รายงานผลการจัดหาและการใช้ AI
+    actor_role: organization
+    description: รายงานต่อคณะกรรมการบริหารและจัดหาระบบคอมพิวเตอร์ของ กฟภ. หลังจัดหาเสร็จ และรายงานการใช้ AI ตามรอบที่กำหนด
+    confirmed: false
+
+documents:
+  - code: purchase_request
+    step: 3

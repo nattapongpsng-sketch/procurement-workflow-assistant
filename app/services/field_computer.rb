@@ -15,13 +15,24 @@ class FieldComputer
     "thai_date" => ->(date) { Thai.date(date) },
     "thai_date_short" => ->(date) { Thai.date(date, format: :short) },
     "buddhist_year" => ->(date) { Thai.buddhist_year(date) },
+    # Year of the letter, or the current year while the letter is undated.
+    "buddhist_year_or_current" => ->(date) { Thai.buddhist_year(date.presence || Date.current) },
     "doc_number" => ->(unit_code, number, year) { Thai.doc_number(unit_code, number, year) },
-    "concat" => ->(*parts) { parts.join },
+    "concat" => ->(*parts) { parts.map { |part| FieldComputer.text(part) }.join },
     "first_present" => ->(*values) { values.find(&:present?) }
   }.freeze
 
   # Functions that accept blank args (others return nil if any arg is blank).
-  BLANK_TOLERANT = %w[doc_number concat first_present].freeze
+  BLANK_TOLERANT = %w[buddhist_year_or_current doc_number first_present].freeze
+
+  # Plain-text rendering of a value inside generated sentences.
+  def self.text(value)
+    case value
+    when BigDecimal then value.frac.zero? ? value.to_i.to_fs(:delimited) : value.to_s("F")
+    when Date then Thai.date(value)
+    else value.to_s
+    end
+  end
 
   def self.formula_problems(computed)
     return [ "ต้องเป็น object ที่มี fn และ args" ] unless computed.is_a?(Hash)
@@ -72,6 +83,7 @@ class FieldComputer
   end
 
   def cast(definition, raw)
+    raw = definition.options["default"] if raw.nil? || raw == ""
     return nil if raw.nil? || raw == ""
 
     case definition.field_type

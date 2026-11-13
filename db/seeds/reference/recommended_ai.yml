@@ -1,0 +1,52 @@
+# รายชื่อ AI ที่อนุญาตให้ใช้งาน/จัดหาได้ (Recommended List)
+# แหล่ง: อนุมัติ ผวก. ลงวันที่ 8 เมษายน 2569 (บันทึก กดท.(ก) 148/2569) เอกสารแนบ 7
+# เมื่อ รผก.(ดส) ทบทวนรายชื่อ ให้เพิ่มไฟล์/list_version ใหม่ ไม่แก้ของเดิม
+list_version: "2569-04-08"
+approved_on: 2026-04-08
+items:
+  - { name: Microsoft Copilot, category: Productivity / Office Automation, vendor: Microsoft Corporation, highlighted: true,
+      capability: "AI Assistant รวมใน Microsoft 365 (Word, Excel, PowerPoint, Teams, Outlook) ช่วยเขียนเอกสาร วิเคราะห์ข้อมูล สรุปอีเมล/ประชุม" }
+  - { name: Adobe Firefly, category: Design / AI Image Generation, vendor: Adobe Inc.,
+      capability: "Generative AI สำหรับ Images, Vectors, Video Effects ผสานใน Adobe Creative Cloud" }
+  - { name: Amazon Q, category: Business Intelligence / AI Assistant, vendor: Amazon Web Services (AWS),
+      capability: "AI Assistant สำหรับองค์กร รองรับ 40+ Data Sources สำหรับ BI และ Development" }
+  - { name: Canva, category: Design / Visual Content, vendor: Canva Pty Ltd (Australia),
+      capability: "Online Graphic Design Platform พร้อม AI Image Generation และ Editing Tools" }
+  - { name: Claude, category: General AI Assistant / Document Analysis, vendor: Anthropic PBC,
+      capability: "AI Conversational Assistant เน้น AI Safety และ Constitutional AI มี Context Window 500K tokens" }
+  - { name: Copy.AI, category: Marketing / GTM Automation, vendor: Copy.ai Inc.,
+      capability: "AI Platform สำหรับ GTM Automation, Marketing Content, Sales Copy" }
+  - { name: Cursor IDE, category: Software Development / Coding, vendor: Anysphere Inc.,
+      capability: "AI-Powered IDE สร้างบน VS Code รองรับ Multi-Model, Privacy Mode" }
+  - { name: DeepL, category: Translation / Language, vendor: DeepL SE (Germany),
+      capability: "Language AI Platform แปลภาษา 30+ ภาษา คุณภาพสูงสุด" }
+  - { name: ElevenLabs, category: Voice/Audio / TTS, vendor: ElevenLabs Inc.,
+      capability: "AI Voice/TTS Platform, Voice Cloning, Conversational AI รองรับ 32+ ภาษา" }
+  - { name: Fireflies.AI, category: Meeting / Transcription, vendor: Fireflies.ai Inc.,
+      capability: "AI Meeting Assistant บันทึก ถอดความ วิเคราะห์การประชุม สร้าง Action Items" }
+  - { name: GitHub Copilot, category: Software Development / Coding, vendor: GitHub (Microsoft),
+      capability: "AI Coding Assistant ช่วยเขียนโค้ด Code Completion, Code Review, PR Assistance" }
+  - { name: Google Gemini, category: Productivity / AI Assistant, vendor: Google LLC,
+      capability: "AI Platform รวมกับ Google Workspace มีความสามารถ Multimodal (Text, Image, Video, Code)" }
+  - { name: Grammarly, category: Writing / Communication, vendor: Grammarly Inc.,
+      capability: "AI Writing Assistant ตรวจไวยากรณ์ Tone Suggestions, AI Writing" }
+  - { name: HeyGen, category: Video Production / AI Avatar, vendor: HeyGen Inc.,
+      capability: "AI Avatar Video Platform สร้างวิดีโอด้วย AI Avatars และ Voice-over" }
+  - { name: Jasper AI, category: Marketing / Content Creation, vendor: Jasper AI Inc.,
+      capability: "AI Content Creation Platform สำหรับ Marketing (Blog, Ads, Social, Emails)" }
+  - { name: Leonardo AI, category: Design / AI Image Generation, vendor: Leonardo.Ai Pty Ltd (Canva-owned),
+      capability: "AI Image Generation Platform สำหรับ Gaming, Advertising, Architecture" }
+  - { name: Murf.ai, category: Voice/Audio / TTS, vendor: Murf AI Inc.,
+      capability: "AI Text-to-Speech สร้าง Voiceovers คุณภาพสูง 200+ voices ใน 20+ ภาษา" }
+  - { name: NotebookLM, category: Research / Summarization, vendor: Google LLC,
+      capability: "AI-Powered Research Assistant สร้างจาก Gemini สำหรับวิจัย สรุปเอกสาร" }
+  - { name: Notion AI, category: Knowledge Management / Productivity, vendor: Notion Labs Inc.,
+      capability: "AI-Connected Workspace รวม Docs, Wikis, Projects พร้อม AI Assistant" }
+  - { name: Perplexity, category: Research / Search, vendor: Perplexity AI Inc.,
+      capability: "AI-Powered Answer Engine สำหรับ Research และ Information Discovery แบบ Real-Time" }
+  - { name: Runway ML, category: Video Production / AI Video, vendor: Runway AI Inc.,
+      capability: "AI Video Generation และ Editing Platform ระดับ Hollywood 30+ AI Magic Tools" }
+  - { name: Synthesia, category: Video Production / AI Avatar, vendor: Synthesia Limited (UK),
+      capability: "AI Video Generation ด้วย AI Avatars สร้างวิดีโอโดยไม่ต้องถ่ายจริง" }
+  - { name: Windsurf (Codeium), category: Software Development / Coding, vendor: Codeium Inc.,
+      capability: "AI-Powered IDE และ Code Assistant รองรับ 70+ ภาษา มี Agentic Features" }

@@ -1,0 +1,8 @@
+# Document templates. The .docx files live in app/templates/docx and are the
+# source of truth for layout. Changing a file that has been used to generate
+# documents requires a new version entry.
+- code: purchase_request
+  version: 1
+  name: รายงานขอซื้อขอจ้าง
+  description: รายงานขอซื้อขอจ้างตามแบบฟอร์มของหน่วยงาน เสนอผู้มีอำนาจอนุมัติให้จัดซื้อและแต่งตั้งผู้ตรวจรับพัสดุ
+  template_path: purchase_request.docx
