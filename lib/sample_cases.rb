@@ -15,7 +15,7 @@ module SampleCases
 
   def self.purchase_request(overrides = {})
     SeedLoader.call
-    workflow = WorkflowTemplate.find_by!(code: "ai_purchase_under_50k", version: 1)
+    workflow = WorkflowTemplate.latest_published.find_by!(code: "ai_purchase_under_50k")
     people = Person.all.index_by(&:employee_code)
     evidence = ActiveStorage::Blob.create_and_upload!(io: File.open(EVIDENCE), filename: "price_evidence.png",
                                                       content_type: "image/png")

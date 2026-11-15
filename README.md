@@ -55,9 +55,10 @@ CI (`.github/workflows/ci.yml`) รัน brakeman, bundler-audit, importmap aud
 ## เอกสาร .docx
 
 - template อยู่ที่ `app/templates/docx/` (มี MERGEFIELD ของ Sablon) และเป็น source of truth ของหน้าตาเอกสาร
-- สร้างไฟล์ตัวอย่างไปเปิดใน Word: `bin/rails docs:render_sample` → `tmp/samples/purchase_request_sample.docx`
+- สร้างไฟล์ตัวอย่างไปเปิดใน Word: `bin/rails docs:render_sample` → `tmp/samples/<เอกสาร>_sample.docx` ทุกเอกสาร
 - สร้าง template ใหม่จากแบบฟอร์มจริง: `bundle exec ruby script/docx/prepare_purchase_request.rb`
   (ต้องมีไฟล์ต้นฉบับใน `docs/samples/` ซึ่งไม่อยู่ใน git เพราะมีข้อมูลบุคคลจริง)
+- รายงานผลการพิจารณาไม่มี .docx ต้นฉบับ สร้างจาก template รายงานขอซื้อ + ถ้อยคำใน PDF: `bundle exec ruby script/docx/build_result_report.rb`
 - ถ้าเปลี่ยน template หรือข้อมูลตัวอย่างโดยตั้งใจ: `UPDATE_GOLDEN=1 bundle exec rspec spec/services/document_generator_spec.rb`
   แล้วตรวจ diff ของ `spec/fixtures/golden/purchase_request.txt` ก่อน commit
 

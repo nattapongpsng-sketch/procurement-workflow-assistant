@@ -16,6 +16,8 @@ RSpec.describe "Searching for a workflow" do
     expect(page).to have_text("จัดทำรายงานขอซื้อขอจ้าง")
     expect(page).to have_text("รอยืนยันกับเจ้าหน้าที่พัสดุ", count: 4)
     expect(page).to have_text("รายงานขอซื้อขอจ้าง (.docx)")
+    expect(page).to have_text("รายงานผลการพิจารณาและอนุมัติสั่งซื้อ (.docx)")
+    expect(page).to have_text("เวอร์ชัน 2")
     expect(page).to have_text("50,000 บาท")
   end
 

@@ -6,3 +6,10 @@
   name: รายงานขอซื้อขอจ้าง
   description: รายงานขอซื้อขอจ้างตามแบบฟอร์มของหน่วยงาน เสนอผู้มีอำนาจอนุมัติให้จัดซื้อและแต่งตั้งผู้ตรวจรับพัสดุ
   template_path: purchase_request.docx
+- code: result_report
+  version: 1
+  name: รายงานผลการพิจารณาและอนุมัติสั่งซื้อ
+  description: >-
+    รายงานผลการพิจารณา เสนอผู้มีอำนาจลงนามอนุมัติสั่งซื้อ และระบุผู้ยืมเงิน
+    (สร้างจาก PDF เพราะไม่มี .docx ต้นฉบับ — ดู script/docx/build_result_report.rb และ OPEN_QUESTIONS Q28)
+  template_path: result_report.docx

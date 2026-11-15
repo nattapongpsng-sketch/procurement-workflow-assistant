@@ -24,3 +24,14 @@ Regenerate after an intended change, then review the diff before committing:
 ```sh
 UPDATE_GOLDEN=1 bundle exec rspec spec/services/document_generator_spec.rb
 ```
+
+## result_report.txt
+
+รายงานผลการพิจารณาและอนุมัติสั่งซื้อ **ไม่มีไฟล์ .docx ต้นฉบับ** (OPEN_QUESTIONS Q28) template จึงสร้างจาก
+template รายงานขอซื้อ (แบบฟอร์มชุดเดียวกัน) ด้วย `script/docx/build_result_report.rb` แล้วใส่เนื้อความตาม
+`docs/samples/ai-purchase/รายงานผลพิจารณา claude ai.pdf` ทุกคำ รวมคำที่น่าจะพิมพ์ผิด (Q8: "อนุมัติจ้าง ขอจัดซื้อ",
+"เฉพาะเจาะจง )", "ณ วันที่ลงวันที่")
+
+เทียบกับ text layer ของ PDF (แทนชื่อจริงและรหัสพนักงานด้วยข้อมูลสมมติ) ตรงกันทุกคำ ต่างเพียงช่องว่างที่ PDF
+แทรกตรงจุดตัดบรรทัด ("โดยวิธี เฉพาะเจาะจง", "จึงเห็นควร ซื้อ", "ผู้เสนอราคา ดังกล่าว") ซึ่งในเอกสารจริงเป็นคำเดียวกัน
+ตำแหน่งช่องลงนามประมาณจากภาพ PDF — ควรให้คนเปิด Word เทียบกับฉบับจริง

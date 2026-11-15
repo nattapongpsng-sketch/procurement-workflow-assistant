@@ -22,9 +22,10 @@ bundle exec rspec              # all specs (golden .docx test included)
 bin/rubocop -A                 # lint + autocorrect
 bin/brakeman --no-pager        # security
 bin/rails db:seed              # idempotent: reference data, docx templates, workflows
-bin/rails docs:render_sample   # tmp/samples/purchase_request_sample.docx
+bin/rails docs:render_sample   # tmp/samples/<document>_sample.docx for every document
 UPDATE_GOLDEN=1 bundle exec rspec spec/services/document_generator_spec.rb   # then review the diff
 bundle exec ruby script/docx/prepare_purchase_request.rb                       # rebuild template (needs docs/samples)
+bundle exec ruby script/docx/build_result_report.rb                            # rebuild result report (from the purchase request template)
 ```
 
 ## Design principles (must hold)
@@ -39,6 +40,8 @@ bundle exec ruby script/docx/prepare_purchase_request.rb                       #
    every rule has `fail.reason` and `alternatives`. Missing data → `unknown`, not fail.
 5. **The real .docx is the source of truth for layout** — templates in `app/templates/docx/` are the real
    forms with MERGEFIELDs inserted by `script/docx/*`; never build layouts from scratch.
+   Only exception: `result_report.docx` (no original .docx exists, owner-approved, Q28) is rebuilt from the
+   purchase request template + the PDF wording.
 6. **Every text is for non-experts** — every input field needs `help`, `example`, `why`
    (validated in `FieldDefinition`). UI language: Thai.
 

@@ -15,9 +15,13 @@
 
 นอกเหนือแผน: หน้า "ค้นหา Workflow" และ "ขั้นตอนทั้งหมด" แบบพื้นฐาน + ViewComponent 5 ตัว ตาม design tokens ของ UI canvas
 
+## หลัง M0
+
+- 15 พ.ย. 2569 — เพิ่มเอกสาร **รายงานผลการพิจารณาและอนุมัติสั่งซื้อ** (`result_report.docx`) สร้างจาก PDF ตามที่อนุมัติใน Q28 และ workflow `ai_purchase_under_50k` **v2** (v1 คงเดิม) golden test: `spec/services/result_report_spec.rb`
+
 ### รอตรวจ
 
-- [ ] เปิด `tmp/samples/purchase_request_sample.docx` (`bin/rails docs:render_sample`) ใน Word เทียบกับแบบฟอร์มจริง — ยังไม่มีใครเปิดด้วย Word
+- [ ] เปิด `tmp/samples/purchase_request_sample.docx` และ `tmp/samples/result_report_sample.docx` (`bin/rails docs:render_sample`) ใน Word เทียบกับแบบฟอร์มจริง/PDF — ยังไม่มีใครเปิดด้วย Word (ตำแหน่งช่องลงนามของรายงานผลประมาณจากภาพ PDF)
 - [ ] `docker compose up --build` บนเครื่องที่เปิด Docker แล้ว
 
 ### การตัดสินใจระหว่าง M0

@@ -3,15 +3,25 @@ require "rails_helper"
 RSpec.describe SeedLoader do
   it "loads the first workflow with every step, field and the full Recommended List" do
     described_class.call
-    workflow = WorkflowTemplate.find_by!(code: "ai_purchase_under_50k", version: 1)
+    workflow = WorkflowTemplate.latest_published.find_by!(code: "ai_purchase_under_50k")
 
-    expect(workflow).to be_published
+    expect(workflow.version).to eq(2)
     expect(workflow.workflow_steps.count).to eq(9)
     expect(workflow.workflow_steps.where(confirmed: false).pluck(:position)).to eq([ 6, 7, 8, 9 ])
-    expect(workflow.document_templates.pluck(:code)).to eq([ "purchase_request" ])
+    expect(workflow.workflow_documents.order(:step_position).map { |d| [ d.document_template.code, d.step_position ] })
+      .to eq([ [ "purchase_request", 3 ], [ "result_report", 4 ] ])
     expect(RecommendedAi.count).to eq(23)
     expect(RecommendedAi.find_by!(name: "Claude").vendor).to eq("Anthropic PBC")
     expect(BudgetSource.find_by!(ref_doc_no: "กนว.(พน.)1182/2569").limit_amount).to eq(1_350_000)
+  end
+
+  it "keeps version 1 exactly as published" do
+    described_class.call
+    v1 = WorkflowTemplate.find_by!(code: "ai_purchase_under_50k", version: 1)
+
+    expect(v1).to be_published
+    expect(v1.document_templates.pluck(:code)).to eq([ "purchase_request" ])
+    expect(v1.field_definitions.count).to eq(53)
   end
 
   it "is idempotent" do
@@ -31,15 +41,18 @@ RSpec.describe SeedLoader do
     expect(template.field_keys).to include("request.subject", "budget.source.charge_text", "price.evidence")
   end
 
-  it "maps every docx field to a workflow field" do
-    workflow = described_class.call.first
-    keys = workflow.field_definitions.map(&:key)
-    reference_keys = workflow.field_definitions.select { |f| %w[reference person list].include?(f.field_type) }.map(&:key)
+  it "maps every docx field of every workflow version to a workflow field" do
+    described_class.call.each do |workflow|
+      keys = workflow.field_definitions.map(&:key)
+      reference_keys = workflow.field_definitions.select { |f| %w[reference person list].include?(f.field_type) }.map(&:key)
 
-    unmapped = DocxFields.paths(DocumentTemplate.find_by!(code: "purchase_request").source_path).reject do |path|
-      keys.include?(path) || reference_keys.any? { |key| path.start_with?("#{key}.") }
+      workflow.document_templates.each do |template|
+        unmapped = DocxFields.paths(template.source_path).reject do |path|
+          keys.include?(path) || reference_keys.any? { |key| path.start_with?("#{key}.") }
+        end
+        expect(unmapped).to be_empty, "#{workflow.code} v#{workflow.version} / #{template.code}: #{unmapped.join(', ')}"
+      end
     end
-    expect(unmapped).to be_empty
   end
 end
 
