@@ -32,6 +32,10 @@ module Workflow
     config.i18n.available_locales = [ :th, :en ]
     config.time_zone = "Bangkok"
 
+    # No image processing gems (ruby-vips/mini_magick): skip Active Storage metadata analysis.
+    # Image sizes for documents are read by ImageDimensions.
+    config.active_storage.analyzers = []
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
