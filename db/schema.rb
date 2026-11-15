@@ -11,6 +11,9 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.1].define(version: 2026_11_13_090200) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -63,7 +66,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_13_090200) do
     t.string "name", null: false
     t.text "description"
     t.string "template_path", null: false
-    t.json "field_keys", default: [], null: false
+    t.jsonb "field_keys", default: [], null: false
     t.string "checksum"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -71,7 +74,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_13_090200) do
   end
 
   create_table "field_definitions", force: :cascade do |t|
-    t.integer "workflow_template_id", null: false
+    t.bigint "workflow_template_id", null: false
     t.string "key", null: false
     t.string "label", null: false
     t.string "group_key", null: false
@@ -81,9 +84,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_13_090200) do
     t.text "help"
     t.text "example"
     t.text "why"
-    t.json "validation", default: {}, null: false
-    t.json "computed"
-    t.json "options", default: {}, null: false
+    t.jsonb "validation", default: {}, null: false
+    t.jsonb "computed"
+    t.jsonb "options", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["workflow_template_id", "key"], name: "index_field_definitions_on_workflow_template_id_and_key", unique: true
@@ -91,11 +94,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_13_090200) do
   end
 
   create_table "generated_documents", force: :cascade do |t|
-    t.integer "procurement_case_id", null: false
-    t.integer "document_template_id", null: false
+    t.bigint "procurement_case_id", null: false
+    t.bigint "document_template_id", null: false
     t.integer "version", null: false
     t.string "status", default: "pending", null: false
-    t.json "data_snapshot", default: {}, null: false
+    t.jsonb "data_snapshot", default: {}, null: false
     t.text "error_message"
     t.datetime "generated_at"
     t.datetime "created_at", null: false
@@ -118,10 +121,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_13_090200) do
   end
 
   create_table "procurement_cases", force: :cascade do |t|
-    t.integer "workflow_template_id", null: false
+    t.bigint "workflow_template_id", null: false
     t.string "title", null: false
     t.string "status", default: "draft", null: false
-    t.json "data", default: {}, null: false
+    t.jsonb "data", default: {}, null: false
     t.string "created_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -144,8 +147,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_13_090200) do
   end
 
   create_table "workflow_documents", force: :cascade do |t|
-    t.integer "workflow_template_id", null: false
-    t.integer "document_template_id", null: false
+    t.bigint "workflow_template_id", null: false
+    t.bigint "document_template_id", null: false
     t.integer "step_position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -155,13 +158,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_13_090200) do
   end
 
   create_table "workflow_steps", force: :cascade do |t|
-    t.integer "workflow_template_id", null: false
+    t.bigint "workflow_template_id", null: false
     t.integer "position", null: false
     t.string "title", null: false
     t.text "description"
     t.string "actor_role"
-    t.json "output_documents", default: [], null: false
-    t.json "required_attachments", default: [], null: false
+    t.jsonb "output_documents", default: [], null: false
+    t.jsonb "required_attachments", default: [], null: false
     t.text "tips"
     t.string "estimated_duration"
     t.boolean "confirmed", default: true, null: false
@@ -176,13 +179,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_13_090200) do
     t.integer "version", null: false
     t.string "name", null: false
     t.text "description"
-    t.json "keywords", default: [], null: false
+    t.jsonb "keywords", default: [], null: false
     t.string "category"
     t.string "procurement_method"
-    t.json "legal_basis", default: [], null: false
-    t.json "eligibility_rules", default: [], null: false
-    t.json "field_groups", default: [], null: false
-    t.json "summary", default: {}, null: false
+    t.jsonb "legal_basis", default: [], null: false
+    t.jsonb "eligibility_rules", default: [], null: false
+    t.jsonb "field_groups", default: [], null: false
+    t.jsonb "summary", default: {}, null: false
     t.string "status", default: "draft", null: false
     t.string "source_digest"
     t.datetime "published_at"

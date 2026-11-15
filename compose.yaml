@@ -1,5 +1,6 @@
 # Development environment: `docker compose up` then open http://localhost:3000
-# SQLite databases and Active Storage files live in the `storage` volume.
+# PostgreSQL data lives in the `pgdata` volume, Active Storage files in `storage`.
+# Running Rails on the host instead? `docker compose up -d db` and use the defaults in .env.example.
 x-app: &app
   build:
     context: .
@@ -7,12 +8,31 @@ x-app: &app
   env_file:
     - path: .env
       required: false
+  environment:
+    DB_HOST: db
   volumes:
     - .:/rails
     - storage:/rails/storage
     - bundle:/usr/local/bundle
+  depends_on:
+    db:
+      condition: service_healthy
 
 services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
+      interval: 5s
+      retries: 20
+
   web:
     <<: *app
     command: bash -c "bundle check || bundle install; bin/rails db:prepare && bin/rails db:seed && rm -f tmp/pids/server.pid && bin/rails server -b 0.0.0.0"
@@ -27,6 +47,9 @@ services:
     <<: *app
     command: bin/rails tailwindcss:watch[always]
     tty: true
+    depends_on: # web runs `bundle install` into the shared bundle volume first
+      web:
+        condition: service_healthy
 
   jobs:
     <<: *app
@@ -36,5 +59,6 @@ services:
         condition: service_healthy
 
 volumes:
+  pgdata:
   storage:
   bundle:

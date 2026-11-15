@@ -4,7 +4,7 @@ class CreateCaseTables < ActiveRecord::Migration[8.1]
       t.references :workflow_template, null: false, foreign_key: true
       t.string :title, null: false
       t.string :status, null: false, default: "draft"
-      t.json :data, null: false, default: {}
+      t.jsonb :data, null: false, default: {}
       t.string :created_by
       t.timestamps
     end
@@ -15,7 +15,7 @@ class CreateCaseTables < ActiveRecord::Migration[8.1]
       t.references :document_template, null: false, foreign_key: true
       t.integer :version, null: false
       t.string :status, null: false, default: "pending"
-      t.json :data_snapshot, null: false, default: {}
+      t.jsonb :data_snapshot, null: false, default: {}
       t.text :error_message
       t.datetime :generated_at
       t.timestamps

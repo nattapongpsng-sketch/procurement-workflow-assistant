@@ -68,8 +68,20 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd="pg_isready -U postgres" --health-interval=5s --health-timeout=5s --health-retries=10
     env:
       RAILS_ENV: test
+      DB_HOST: localhost
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -82,10 +94,10 @@ jobs:
       - name: Build Tailwind CSS
         run: bin/rails tailwindcss:build
 
-      # schema:load, not db:prepare — db:prepare seeds a newly created database, and seed rows
-      # outside the per-test transactions break uniqueness and search specs.
-      - name: Load database schema
-        run: bin/rails db:schema:load
+      # db:create + schema:load, not db:prepare — db:prepare seeds a newly created database, and
+      # seed rows outside the per-test transactions break uniqueness and search specs.
+      - name: Create database and load schema
+        run: bin/rails db:create db:schema:load
 
       - name: Run RSpec (models, services, golden docx test, components, system)
         run: bundle exec rspec --format progress

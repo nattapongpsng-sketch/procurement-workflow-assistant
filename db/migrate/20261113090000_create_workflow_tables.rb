@@ -5,13 +5,13 @@ class CreateWorkflowTables < ActiveRecord::Migration[8.1]
       t.integer :version, null: false
       t.string :name, null: false
       t.text :description
-      t.json :keywords, null: false, default: []
+      t.jsonb :keywords, null: false, default: []
       t.string :category
       t.string :procurement_method
-      t.json :legal_basis, null: false, default: []
-      t.json :eligibility_rules, null: false, default: []
-      t.json :field_groups, null: false, default: []
-      t.json :summary, null: false, default: {}
+      t.jsonb :legal_basis, null: false, default: []
+      t.jsonb :eligibility_rules, null: false, default: []
+      t.jsonb :field_groups, null: false, default: []
+      t.jsonb :summary, null: false, default: {}
       t.string :status, null: false, default: "draft"
       t.string :source_digest
       t.datetime :published_at
@@ -26,8 +26,8 @@ class CreateWorkflowTables < ActiveRecord::Migration[8.1]
       t.string :title, null: false
       t.text :description
       t.string :actor_role
-      t.json :output_documents, null: false, default: []
-      t.json :required_attachments, null: false, default: []
+      t.jsonb :output_documents, null: false, default: []
+      t.jsonb :required_attachments, null: false, default: []
       t.text :tips
       t.string :estimated_duration
       t.boolean :confirmed, null: false, default: true
@@ -46,9 +46,9 @@ class CreateWorkflowTables < ActiveRecord::Migration[8.1]
       t.text :help
       t.text :example
       t.text :why
-      t.json :validation, null: false, default: {}
-      t.json :computed
-      t.json :options, null: false, default: {}
+      t.jsonb :validation, null: false, default: {}
+      t.jsonb :computed
+      t.jsonb :options, null: false, default: {}
       t.timestamps
     end
     add_index :field_definitions, [ :workflow_template_id, :key ], unique: true
@@ -59,7 +59,7 @@ class CreateWorkflowTables < ActiveRecord::Migration[8.1]
       t.string :name, null: false
       t.text :description
       t.string :template_path, null: false
-      t.json :field_keys, null: false, default: []
+      t.jsonb :field_keys, null: false, default: []
       t.string :checksum
       t.timestamps
     end
