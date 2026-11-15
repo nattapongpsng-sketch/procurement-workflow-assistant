@@ -50,19 +50,19 @@ DocxTemplateBuilder.new(SOURCE, TARGET).build do |doc|
     [ "จึงเรียนมาเพื่อโปรดพิจารณา หากเห็นชอบโปรดลงนามอนุมัติให้สั่งซื้อสั่งจ้างจากผู้เสนอราคาดังกล่าวต่อไป" ], **body
   )
 
-  3.times { blank.call }
+  2.times { blank.call }
   requester_block = { "ind" => { "left" => "4536" }, "jc" => { "val" => "center" } } # right half, centred
   doc.append_paragraph([ "(", f("people.requester.display_name"), ")" ], **plain, ppr_set: requester_block)
   doc.append_paragraph([ f("people.requester.position_en") ], **plain, ppr_set: requester_block)
 
-  3.times { blank.call }
+  2.times { blank.call }
   doc.append_paragraph([ "อนุมัติสั่งซื้อสั่งจ้าง" ], **plain, ppr_set: { "ind" => { "left" => "1134" } })
   2.times { blank.call }
   approver_block = { "ind" => { "left" => "567", "right" => "5103" }, "jc" => { "val" => "center" } }
   doc.append_paragraph([ "(", f("people.approver.display_name"), ")" ], **plain, ppr_set: approver_block)
   doc.append_paragraph([ f("people.approver.position_short") ], **plain, ppr_set: approver_block)
 
-  4.times { blank.call }
+  2.times { blank.call }
   doc.append_paragraph([ f("org.unit_short"), " ", f("org.phone") ], **plain)
 end
 

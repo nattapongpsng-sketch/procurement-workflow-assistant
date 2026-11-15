@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+# Installs the TH Sarabun New font family system-wide (Docker images, CI).
+# Font: Copyright SIPA, by Suppakit Chalermlarp — GNU GPL v2+ with a font exception
+# (embedding it in documents does not make them GPL); OS/2 fsType 0 (embeddable).
+# The font is downloaded and checksum-verified, not stored in this repository.
+# Needs: curl, unzip, fontconfig. Run as root.
+set -eu
+
+URL="${TH_SARABUN_NEW_URL:-https://www.f0nt.com/download/sipafonts/THSarabunNew.zip}"
+SHA256="${TH_SARABUN_NEW_SHA256:-7a3db732e475b0b8adb10adf4058e7d8161ecef157f56f9711c229c73bedc592}"
+DEST="${TH_SARABUN_NEW_DIR:-/usr/share/fonts/truetype/th-sarabun-new}"
+
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+curl -fsSL --retry 3 "$URL" -o "$tmp/font.zip"
+echo "$SHA256  $tmp/font.zip" | sha256sum -c -
+mkdir -p "$DEST"
+unzip -j -o -q "$tmp/font.zip" '*.ttf' -x '__MACOSX/*' -d "$DEST"
+fc-cache -f "$DEST" > /dev/null
+fc-list | grep -q "TH Sarabun New" && echo "installed TH Sarabun New in $DEST"

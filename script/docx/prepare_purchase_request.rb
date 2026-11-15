@@ -77,6 +77,10 @@ DocxTemplateBuilder.new(SOURCE, TARGET).build do |doc|
   RULES.each { |rule| doc.apply(rule) }
   doc.wrap_image(media: "word/media/image2.png", field: "price.evidence")
   doc.replace_media("word/media/image2.png", DocxTemplateBuilder.placeholder_png(716, 1490))
+  # Signature boxes: the real form's 4 cm boxes cut off longer names and draw an outline
+  # the signed paper copy does not have. Text column = 21 cm - 3 cm - 2 cm = 16 cm.
+  doc.restyle_text_boxes(width_emu: 2_340_000, column_width_emu: 5_760_000)
+  doc.remove_trailing_empty_paragraphs
   doc.scrub_metadata!
   # Requirement NFR-04: documents use TH Sarabun New (improved, metric-compatible TH SarabunPSK).
   doc.replace_font("TH SarabunPSK", "TH Sarabun New")

@@ -36,6 +36,10 @@ module Workflow
     # Image sizes for documents are read by ImageDimensions.
     config.active_storage.analyzers = []
 
+    # Generated documents must come with a PDF (needs LibreOffice + TH Sarabun New, see
+    # script/install_th_sarabun_new). Off in dev/test so specs run without LibreOffice.
+    config.x.pdf_required = ENV.fetch("PDF_REQUIRED") { Rails.env.production? ? "true" : "false" } == "true"
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

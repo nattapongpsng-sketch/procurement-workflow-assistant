@@ -2,8 +2,11 @@
 ARG RUBY_VERSION=3.4.12
 FROM docker.io/library/ruby:$RUBY_VERSION-slim
 
+COPY script/install_th_sarabun_new /usr/local/bin/install_th_sarabun_new
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential curl git libyaml-dev pkg-config postgresql-client && \
+    apt-get install --no-install-recommends -y build-essential curl git libyaml-dev pkg-config postgresql-client \
+      libreoffice-writer-nogui fontconfig unzip && \
+    install_th_sarabun_new && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 WORKDIR /rails
@@ -12,6 +15,14 @@ ENV BUNDLE_PATH=/usr/local/bundle \
 
 COPY Gemfile Gemfile.lock .ruby-version ./
 RUN bundle install
+
+# Run as the host user so files written through the bind mount (storage/, tmp/, log/)
+# stay owned by you, not root. Override with UID/GID build args (see compose.yaml).
+ARG UID=1000
+ARG GID=1000
+RUN groupadd --gid "$GID" app && useradd --uid "$UID" --gid "$GID" --create-home app && \
+    chown -R app:app /usr/local/bundle /rails
+USER app
 
 COPY . .
 

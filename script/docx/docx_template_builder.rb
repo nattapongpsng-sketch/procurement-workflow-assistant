@@ -124,6 +124,59 @@ class DocxTemplateBuilder
     paragraph
   end
 
+  # Signature text boxes: widen to `width_emu` (keeping the right edge for boxes in the
+  # right half of the column), drop the outline and let the box grow with its text, so
+  # long names and positions are never cut off. Updates the VML fallback copy too.
+  def restyle_text_boxes(width_emu:, column_width_emu:)
+    ns = @doc.root.namespaces.merge(
+      "xmlns:wp" => "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing",
+      "xmlns:wps" => "http://schemas.microsoft.com/office/word/2010/wordprocessingShape",
+      "xmlns:a" => "http://schemas.openxmlformats.org/drawingml/2006/main",
+      "xmlns:mc" => "http://schemas.openxmlformats.org/markup-compatibility/2006",
+      "xmlns:v" => "urn:schemas-microsoft-com:vml"
+    ).transform_keys { |key| key.delete_prefix("xmlns:") }
+    anchors = @doc.xpath("//wp:anchor[.//wps:txbx]", ns)
+    raise "no text boxes found" if anchors.empty?
+
+    anchors.each do |anchor|
+      extent = anchor.at_xpath("wp:extent", ns)
+      offset = anchor.at_xpath("wp:positionH/wp:posOffset", ns)
+      old_width = extent["cx"].to_i
+      left = offset.text.to_i
+      new_left = left + (old_width / 2) > column_width_emu / 2 ? left + old_width - width_emu : left
+      new_left = new_left.clamp(0, column_width_emu - width_emu)
+
+      extent["cx"] = width_emu.to_s
+      anchor.at_xpath(".//a:xfrm/a:ext", ns)["cx"] = width_emu.to_s
+      offset.content = new_left.to_s
+      line = anchor.at_xpath(".//wps:spPr/a:ln", ns)
+      line.children.remove
+      line.add_child(Nokogiri::XML::Node.new("noFill", @doc).tap { |n| n.namespace = line.namespace })
+      autofit = anchor.at_xpath(".//wps:bodyPr/a:noAutofit", ns)
+      autofit.name = "spAutoFit" if autofit
+
+      shape = anchor.at_xpath("ancestor::mc:AlternateContent[1]/mc:Fallback//v:shape", ns)
+      next unless shape
+
+      style = shape["style"]
+      style = style.sub(/width:[\d.]+pt/, "width:#{(width_emu / 12_700.0).round(2)}pt")
+      style = style.sub(/margin-left:[\d.]+pt/, "margin-left:#{(new_left / 12_700.0).round(2)}pt")
+      shape["style"] = style
+      shape["stroked"] = "f"
+    end
+  end
+
+  # Removes empty paragraphs at the end of the body (they only push a blank page out).
+  def remove_trailing_empty_paragraphs
+    body = @doc.at_xpath("//w:body", NS)
+    body.element_children.reverse_each do |node|
+      next if node.name == "sectPr"
+      break unless node.name == "p" && text_of(node).strip.empty? && node.xpath(".//w:drawing|.//w:pict|.//w:fldSimple", NS).empty?
+
+      node.remove
+    end
+  end
+
   # Renames a font in every Word XML part (document, styles, numbering, fontTable, headers).
   # Applied when the package is written, after all other edits.
   def replace_font(from, to)

@@ -5,15 +5,16 @@ class GeneratedDocument < ApplicationRecord
 
   belongs_to :procurement_case
   belongs_to :document_template
-  has_one_attached :file
+  has_one_attached :file # .docx (for special-case edits)
+  has_one_attached :pdf  # PDF with embedded fonts (Requirement FR-21)
 
   validates :version, presence: true, numericality: { only_integer: true, greater_than: 0 },
                       uniqueness: { scope: [ :procurement_case_id, :document_template_id ] }
 
   before_validation :assign_next_version, on: :create
 
-  def filename
-    "#{document_template.code}-case#{procurement_case_id}-v#{version}.docx"
+  def filename(extension = "docx")
+    "#{document_template.code}-case#{procurement_case_id}-v#{version}.#{extension}"
   end
 
   private

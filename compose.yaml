@@ -1,10 +1,14 @@
 # Development environment: `docker compose up` then open http://localhost:3000
-# PostgreSQL data lives in the `pgdata` volume, Active Storage files in `storage`.
+# PostgreSQL data lives in the `pgdata` volume; Active Storage files stay in ./storage (bind mount),
+# so the host and the containers see the same files for the shared dev database.
 # Running Rails on the host instead? `docker compose up -d db` and use the defaults in .env.example.
 x-app: &app
   build:
     context: .
     dockerfile: Dockerfile.dev
+    args: # match your host user so bind-mounted files are not owned by root
+      UID: ${UID:-1000}
+      GID: ${GID:-1000}
   env_file:
     - path: .env
       required: false
@@ -12,7 +16,6 @@ x-app: &app
     DB_HOST: db
   volumes:
     - .:/rails
-    - storage:/rails/storage
     - bundle:/usr/local/bundle
   depends_on:
     db:
@@ -60,5 +63,4 @@ services:
 
 volumes:
   pgdata:
-  storage:
   bundle:

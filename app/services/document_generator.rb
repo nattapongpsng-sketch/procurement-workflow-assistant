@@ -22,12 +22,15 @@ class DocumentGenerator
     @document.data_snapshot = DocumentContext.build(procurement_case, for_snapshot: true)
     bytes = render(DocumentContext.build(procurement_case))
     @document.file.attach(io: StringIO.new(bytes), filename: @document.filename, content_type: SeedLoader::DOCX_TYPE)
+    attach_pdf(bytes)
     @document.update!(status: :succeeded, generated_at: Time.current)
     @document
   rescue StandardError => e
     @document.update!(status: :failed, error_message: "#{e.class}: #{e.message}")
     raise
   end
+
+  def self.pdf_required? = Rails.configuration.x.pdf_required
 
   # Renders to a String of .docx bytes. Uses the template stored in Active
   # Storage; falls back to the file in the repo when none is attached yet.
@@ -41,5 +44,16 @@ class DocumentGenerator
 
       Sablon.template(path.to_s).render_to_string(context)
     end
+  end
+
+  private
+
+  # PDF from the rendered .docx. Required in production; elsewhere only when
+  # LibreOffice is installed (Docker image, CI).
+  def attach_pdf(docx_bytes)
+    return unless self.class.pdf_required? || PdfConverter.available?
+
+    pdf = PdfConverter.call(docx_bytes)
+    @document.pdf.attach(io: StringIO.new(pdf), filename: @document.filename("pdf"), content_type: "application/pdf")
   end
 end
