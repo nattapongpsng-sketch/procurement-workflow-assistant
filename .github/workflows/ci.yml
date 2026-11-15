@@ -82,8 +82,10 @@ jobs:
       - name: Build Tailwind CSS
         run: bin/rails tailwindcss:build
 
-      - name: Prepare database
-        run: bin/rails db:prepare
+      # schema:load, not db:prepare — db:prepare seeds a newly created database, and seed rows
+      # outside the per-test transactions break uniqueness and search specs.
+      - name: Load database schema
+        run: bin/rails db:schema:load
 
       - name: Run RSpec (models, services, golden docx test, components, system)
         run: bundle exec rspec --format progress
