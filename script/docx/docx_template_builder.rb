@@ -10,6 +10,11 @@ class DocxTemplateBuilder
   R = "http://schemas.openxmlformats.org/officeDocument/2006/relationships".freeze
   NS = { "w" => W, "r" => R, "a" => "http://schemas.openxmlformats.org/drawingml/2006/main" }.freeze
   DOCUMENT = "word/document.xml".freeze
+  # Child order of w:pPr required by the WordprocessingML schema (CT_PPr).
+  PPR_ORDER = %w[pStyle keepNext keepLines pageBreakBefore framePr widowControl numPr suppressLineNumbers pBdr shd
+                 tabs suppressAutoHyphens kinsoku wordWrap overflowPunct topLinePunct autoSpaceDE autoSpaceDN bidi
+                 adjustRightInd snapToGrid spacing ind contextualSpacing mirrorIndents suppressOverlap jc
+                 textDirection textAlignment textboxTightWrap outlineLvl divId cnfStyle rPr sectPr pPrChange].freeze
 
   Field = Struct.new(:expr)
 
@@ -71,6 +76,52 @@ class DocxTemplateBuilder
     run.add_previous_sibling(field_node("@#{field}:start", rpr))
     run.add_next_sibling(field_node("#{field}:endIf", rpr))
     run.add_next_sibling(field_node("@#{field}:end", rpr))
+  end
+
+  # The single body-level paragraph whose text matches `pattern`.
+  def paragraph(pattern)
+    matches = paragraphs.select { |p| text_of(p).match?(pattern) }
+    raise "expected 1 paragraph matching #{pattern.inspect}, found #{matches.size}" unless matches.size == 1
+
+    matches.first
+  end
+
+  # Paragraph and run properties of `paragraph`, to style new paragraphs like existing ones.
+  def styles_of(paragraph)
+    { ppr: paragraph.at_xpath("w:pPr", NS)&.dup, rpr: run_properties(paragraph)&.dup }
+  end
+
+  # Removes every body element after `node` except the section properties.
+  def remove_body_after(node)
+    node.xpath("following-sibling::*").each { |sibling| sibling.remove unless sibling.name == "sectPr" }
+  end
+
+  # Appends a paragraph at the end of the body (before sectPr), styled with a copy
+  # of `ppr`. `ppr_set` replaces paragraph properties, e.g. { "ind" => { "left" => "850" } }.
+  def append_paragraph(segments, ppr:, rpr:, ppr_set: {})
+    paragraph = node("w:p")
+    if ppr
+      props = ppr.dup
+      ppr_set.each do |name, attrs|
+        props.xpath("w:#{name}", NS).each(&:remove)
+        element = node("w:#{name}")
+        attrs.each { |key, value| element["w:#{key}"] = value }
+        # Insert at the position the schema requires (Word rejects out-of-order pPr children).
+        rank = PPR_ORDER.index(name) or raise "unknown pPr element #{name}"
+        anchor = props.element_children.find { |child| (PPR_ORDER.index(child.name) || PPR_ORDER.size) > rank }
+        anchor ? anchor.add_previous_sibling(element) : props.add_child(element)
+      end
+      paragraph.add_child(props)
+    end
+    Array(segments).each do |segment|
+      if segment.is_a?(Field)
+        paragraph.add_child(field_node("=#{segment.expr}", rpr))
+      else
+        segment.split(/(\t)/).reject(&:empty?).each { |part| paragraph.add_child(text_run(part, rpr)) }
+      end
+    end
+    @doc.at_xpath("//w:body/w:sectPr", NS).add_previous_sibling(paragraph)
+    paragraph
   end
 
   def replace_media(name, bytes)
