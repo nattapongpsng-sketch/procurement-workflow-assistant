@@ -2,6 +2,8 @@
 # A published version is frozen: changing a workflow means publishing a new version,
 # and every case stays bound to the version it was created from.
 class WorkflowTemplate < ApplicationRecord
+  include Auditable
+
   FROZEN_ATTRIBUTES = %w[code version name description keywords category procurement_method
                          legal_basis eligibility_rules field_groups summary source_digest].freeze
 

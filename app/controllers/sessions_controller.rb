@@ -9,6 +9,7 @@ class SessionsController < ApplicationController
     user = User.authenticate_by(params.permit(:email_address, :password))
     if user&.active?
       start_new_session_for user
+      AuditEvent.record(action: :sign_in, auditable: user, actor: user, summary: user.email_address)
       redirect_to after_authentication_url
     elsif user
       redirect_to new_session_path, alert: "บัญชีนี้ถูกปิดใช้งาน กรุณาติดต่อผู้ดูแลระบบ"
@@ -18,6 +19,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    AuditEvent.record(action: :sign_out, auditable: Current.user, summary: Current.user.email_address)
     terminate_session
     redirect_to new_session_path, status: :see_other
   end

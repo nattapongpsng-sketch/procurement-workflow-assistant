@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_15_150800) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_15_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_150800) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "audit_events", force: :cascade do |t|
+    t.datetime "occurred_at", null: false
+    t.bigint "actor_id"
+    t.string "action", null: false
+    t.string "auditable_type", null: false
+    t.bigint "auditable_id", null: false
+    t.string "summary"
+    t.jsonb "changes_data", default: {}, null: false
+    t.jsonb "metadata", default: {}, null: false
+    t.index ["action"], name: "index_audit_events_on_action"
+    t.index ["actor_id"], name: "index_audit_events_on_actor_id"
+    t.index ["auditable_type", "auditable_id"], name: "index_audit_events_on_auditable_type_and_auditable_id"
+    t.index ["occurred_at"], name: "index_audit_events_on_occurred_at"
   end
 
   create_table "budget_sources", force: :cascade do |t|
@@ -260,6 +275,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_150800) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "audit_events", "users", column: "actor_id"
   add_foreign_key "departments", "departments", column: "parent_id"
   add_foreign_key "departments", "organizations"
   add_foreign_key "field_definitions", "workflow_templates"
@@ -276,4 +292,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_150800) do
   add_foreign_key "workflow_documents", "document_templates"
   add_foreign_key "workflow_documents", "workflow_templates"
   add_foreign_key "workflow_steps", "workflow_templates"
+
+  create_function :prevent_audit_event_changes, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.prevent_audit_event_changes()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      BEGIN
+        RAISE EXCEPTION 'audit_events is append-only: % is not allowed', TG_OP
+          USING ERRCODE = 'insufficient_privilege';
+      END;
+      $function$
+  SQL
+
+  create_trigger :audit_events_append_only, sql_definition: <<-SQL
+      CREATE TRIGGER audit_events_append_only BEFORE DELETE OR UPDATE ON public.audit_events FOR EACH ROW EXECUTE FUNCTION prevent_audit_event_changes()
+  SQL
+
+  create_trigger :audit_events_no_truncate, sql_definition: <<-SQL
+      CREATE TRIGGER audit_events_no_truncate BEFORE TRUNCATE ON public.audit_events FOR EACH STATEMENT EXECUTE FUNCTION prevent_audit_event_changes()
+  SQL
 end

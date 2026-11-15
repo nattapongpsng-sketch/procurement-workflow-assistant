@@ -1,5 +1,7 @@
 # ส่วนงาน. Users see the cases of their own department (Requirement NFR-05).
 class Department < ApplicationRecord
+  include Auditable
+
   belongs_to :organization
   belongs_to :parent, class_name: "Department", optional: true
   has_many :children, class_name: "Department", foreign_key: :parent_id, dependent: :restrict_with_error,

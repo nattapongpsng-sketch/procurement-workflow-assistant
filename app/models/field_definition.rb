@@ -1,5 +1,7 @@
 # One input (or computed value) collected at the case level and shared by every document.
 class FieldDefinition < ApplicationRecord
+  include Auditable
+
   TYPES = %w[text longtext number money date boolean person select list file reference].freeze
   KEY_FORMAT = /\A[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*\z/
 

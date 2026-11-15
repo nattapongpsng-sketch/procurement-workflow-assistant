@@ -2,6 +2,8 @@
 # `data` holds every field value flat by FieldDefinition#key, entered once and
 # reused by every document (design principle 2).
 class ProcurementCase < ApplicationRecord
+  include Auditable
+
   enum :status, { draft: "draft", submitted: "submitted", approved: "approved", closed: "closed",
                   cancelled: "cancelled" }, validate: true
 

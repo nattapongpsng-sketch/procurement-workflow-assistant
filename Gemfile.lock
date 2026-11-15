@@ -120,6 +120,9 @@ GEM
     fugit (1.14.0)
       et-orbi (~> 1.4)
       raabro (~> 1.4)
+    fx (0.13.0)
+      activerecord (>= 8.1)
+      railties (>= 8.1)
     globalid (1.4.0)
       activesupport (>= 6.1)
     i18n (1.15.2)
@@ -405,6 +408,7 @@ DEPENDENCIES
   capybara (~> 3.40)
   debug
   factory_bot_rails (~> 6.5)
+  fx (~> 0.13)
   importmap-rails
   pg (~> 1.6)
   propshaft

@@ -1,5 +1,7 @@
 # AI products PEA allows units to procure (Recommended List approved by ผวก.).
 class RecommendedAi < ApplicationRecord
+  include Auditable
+
   validates :name, presence: true, uniqueness: { scope: :list_version }
   validates :category, :vendor, :list_version, presence: true
 

@@ -29,6 +29,7 @@ class AppHeaderComponent < ApplicationComponent
         tag.span(class: "flex items-center gap-2 rounded-ctl px-3 py-2 text-text-2", title: "เปิดใช้ใน Milestone 1") do
           safe_join([ "เรื่องของฉัน", render(BadgeComponent.new("เร็ว ๆ นี้", tone: :future)) ])
         end,
+        (nav_link("ประวัติการใช้งาน", helpers.audit_events_path, "audit") if @user.admin? || @user.role?(:auditor)),
         (nav_link("ตั้งค่า", helpers.admin_users_path, "admin") if @user.admin?)
       ].compact)
     end

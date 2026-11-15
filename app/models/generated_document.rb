@@ -1,5 +1,7 @@
 # One rendered .docx for a case. Keeps the exact data it was rendered from.
 class GeneratedDocument < ApplicationRecord
+  include Auditable
+
   enum :status, { pending: "pending", generating: "generating", succeeded: "succeeded", failed: "failed" },
        validate: true
 

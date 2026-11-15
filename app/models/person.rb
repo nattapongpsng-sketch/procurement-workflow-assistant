@@ -1,4 +1,6 @@
 class Person < ApplicationRecord
+  include Auditable
+
   validates :title_prefix, :full_name, :position_short, :unit_code, presence: true
   validates :employee_code, uniqueness: true, allow_nil: true, format: { with: /\A\d+\z/, allow_nil: true }
 

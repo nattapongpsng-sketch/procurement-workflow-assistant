@@ -64,3 +64,5 @@ gem "capybara", "~> 3.40", group: :test
 gem "selenium-webdriver", "~> 4.52", group: :test
 
 gem "rails-i18n", "~> 8.1"
+
+gem "fx", "~> 0.13"

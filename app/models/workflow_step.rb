@@ -1,4 +1,6 @@
 class WorkflowStep < ApplicationRecord
+  include Auditable
+
   ACTOR_ROLES = %w[requester approver inspector borrower finance organization].freeze
 
   belongs_to :workflow_template, inverse_of: :workflow_steps

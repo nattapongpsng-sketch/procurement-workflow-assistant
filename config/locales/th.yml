@@ -17,6 +17,16 @@ th:
     auditor: ผู้ตรวจสอบ (อ่านอย่างเดียว)
   activerecord:
     models:
+      audit_event: ประวัติการใช้งาน
+      procurement_case: เรื่อง
+      generated_document: เอกสารที่สร้าง
+      workflow_template: Workflow
+      workflow_step: ขั้นตอน
+      field_definition: ฟิลด์
+      document_template: แม่แบบเอกสาร
+      budget_source: แหล่งงบประมาณ
+      person: บุคคล
+      recommended_ai: Recommended AI
       user: ผู้ใช้
       department: ส่วนงาน
       position: ตำแหน่ง
@@ -40,3 +50,15 @@ th:
       position:
         title: ชื่อตำแหน่ง
         short_title: ชื่อย่อ
+  audit_actions:
+    create: สร้าง
+    update: แก้ไข
+    destroy: ลบ
+    sign_in: เข้าสู่ระบบ
+    sign_out: ออกจากระบบ
+    approve: อนุมัติ
+    reject: ไม่อนุมัติ
+    return: ส่งกลับ
+    cancel: ยกเลิก
+    generate: สร้างเอกสาร
+    export: ส่งออกข้อมูล

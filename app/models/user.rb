@@ -1,6 +1,8 @@
 # A person who signs in. One user may hold several roles (Requirement "ผู้ใช้และบทบาท");
 # separation of duties per case is enforced where the duties happen (M2/M3).
 class User < ApplicationRecord
+  include Auditable
+
   ROLES = %w[requester procurement_officer procurement_head approver inspector finance admin auditor].freeze
   # Roles that may see every department's cases (others see their own department only, NFR-05).
   ORGANIZATION_WIDE_ROLES = %w[admin auditor].freeze

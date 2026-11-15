@@ -1,6 +1,8 @@
 # A real .docx form with MERGEFIELD placeholders (app/templates/docx).
 # The .docx file is the source of truth for the document layout (design principle 5).
 class DocumentTemplate < ApplicationRecord
+  include Auditable
+
   TEMPLATE_DIR = Rails.root.join("app/templates/docx")
 
   has_one_attached :docx_file

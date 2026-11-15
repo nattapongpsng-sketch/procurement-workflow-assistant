@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   root "workflows#index"
   resources :workflows, only: %i[index show]
 
+  resources :audit_events, only: :index
+
   namespace :admin do
     resources :users, only: %i[index new create edit update]
     resources :departments, only: %i[index new create edit update]

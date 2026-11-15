@@ -1,5 +1,7 @@
 # ตำแหน่ง. Approval authority per position comes in M2 (Requirement FR-02).
 class Position < ApplicationRecord
+  include Auditable
+
   belongs_to :organization
   has_many :users, dependent: :restrict_with_error
 
