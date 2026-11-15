@@ -11,7 +11,7 @@
 | 5 | DocumentGenerator (Sablon, Solid Queue, Active Storage) + golden test | ✅ | `spec/services/document_generator_spec.rb`; ทดสอบ Solid Queue จริงใน development แล้ว (job → succeeded, ไฟล์ 84 KB) |
 | 6 | CLAUDE.md | ✅ | |
 | 7 | ROADMAP / PROGRESS / OPEN_QUESTIONS | ✅ | |
-| 8 | rubocop, brakeman, RSpec ใน CI | ✅ ในเครื่อง | rubocop 0 offense, brakeman 0 warning (1 รายการ ignore พร้อมเหตุผล), bundler-audit/importmap audit ไม่พบช่องโหว่, RSpec 87 ตัวอย่างผ่าน — CI จะรันจริงเมื่อ push ขึ้น GitHub (Q26) |
+| 8 | rubocop, brakeman, RSpec ใน CI | ✅ | CI เขียวทั้ง 4 job (lint, scan_ruby, scan_js, test) บน https://github.com/nattapongpsng-sketch/procurement-workflow-assistant — รอบแรกแดงเพราะ `db:prepare` seed DB ทดสอบ แก้เป็น `db:schema:load` แล้ว |
 
 นอกเหนือแผน: หน้า "ค้นหา Workflow" และ "ขั้นตอนทั้งหมด" แบบพื้นฐาน + ViewComponent 5 ตัว ตาม design tokens ของ UI canvas
 
