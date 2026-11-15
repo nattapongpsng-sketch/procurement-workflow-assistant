@@ -1,28 +1,38 @@
 # CLAUDE.md
 
-Procurement Workflow Assistant ("จัดซื้อง่าย") for PEA (กฟภ.) units. Users who don't know procurement
-pick a workflow, see its steps, fill a case once, and get approval documents (.docx) that look like the
-real forms. Domain details: `docs/DOMAIN.md`. Open questions: `docs/OPEN_QUESTIONS.md` (log uncertain
-legal/regulatory points there instead of guessing).
+Procurement Workflow Assistant ("จัดซื้อง่าย"): specific-method procurement ≤ 100,000 baht and direct
+payments (utilities) for a PEA (กฟภ.) unit — fill a request once, get every document (PDF + .docx) in the
+unit's real forms, route it for approval, inspection and payment. **Requirements: `docs/Requirement.md`**
+(FR-xx / NFR-xx codes), plan: `docs/REPLAN.md`, `docs/ROADMAP.md`. Domain: `docs/DOMAIN.md`. Open
+questions: `docs/OPEN_QUESTIONS.md` (log uncertain legal/regulatory/tax points there instead of guessing).
 
 ## Stack
 
-Ruby 3.4.12 (mise) · Rails 8.1 · SQLite everywhere (case data in a `json` column) · Solid Queue/Cache/Cable ·
-Hotwire + importmap (no Node) · tailwindcss-rails v4 · ViewComponent · Sablon for .docx · Active Storage ·
-RSpec + FactoryBot + Capybara · rubocop-rails-omakase · brakeman · GitHub Actions · Docker Compose (dev)
+Ruby 3.4.12 (mise) · Rails 8.1 · PostgreSQL 17 (case data in `jsonb`; Solid Queue/Cache/Cable on Postgres) ·
+Rails 8 authentication · Hotwire + importmap (no Node) · tailwindcss-rails v4 · ViewComponent · Sablon (.docx)
++ LibreOffice headless (PDF, TH Sarabun New embedded) · Active Storage · fx (DB triggers in schema.rb) ·
+RSpec + FactoryBot + Capybara · rubocop-rails-omakase · brakeman · GitHub + GitHub Actions (Requirement says
+GitLab; owner chose GitHub) · Docker Compose (dev)
 
 ## Commands
 
 The shell may not activate mise: prefix commands with `eval "$(mise env -s bash)" &&`.
+PostgreSQL runs in Docker: `docker compose up -d db` (host port 5432, postgres/postgres).
+LibreOffice is only in the Docker image and CI — locally PDF specs skip; run them with
+`docker compose run --rm -e RAILS_ENV=test web bundle exec rspec spec/services/pdf_converter_spec.rb`.
 
 ```sh
-bin/setup --skip-server        # deps, db:prepare, db:seed
+docker compose up -d db        # PostgreSQL for host-side Rails
+bin/setup --skip-server        # deps, db:prepare, db:seed (+ fictional dev users, password dev-password-1234)
+docker compose up              # full stack: db, web, css, jobs (runs as your uid)
 bin/dev                        # web + tailwind watch + bin/jobs
 bundle exec rspec              # all specs (golden .docx test included)
 bin/rubocop -A                 # lint + autocorrect
 bin/brakeman --no-pager        # security
 bin/rails db:seed              # idempotent: reference data, docx templates, workflows
 bin/rails docs:render_sample   # tmp/samples/<document>_sample.docx for every document
+bin/rails users:create_admin EMAIL=... NAME=...   # first admin (prints a one-time password)
+script/backup_db               # pg_dump of every app database + Active Storage files
 UPDATE_GOLDEN=1 bundle exec rspec spec/services/document_generator_spec.rb   # then review the diff
 bundle exec ruby script/docx/prepare_purchase_request.rb                       # rebuild template (needs docs/samples)
 bundle exec ruby script/docx/build_result_report.rb                            # rebuild result report (from the purchase request template)
@@ -46,6 +56,16 @@ bundle exec ruby script/docx/build_result_report.rb                            #
    (validated in `FieldDefinition`). UI language: Thai.
 
 ## Conventions
+
+- Roles (`User::ROLES`, several per user): requester, procurement_officer, procurement_head, approver,
+  inspector, finance, admin, auditor. Controllers: `require_role :admin`. Users see their own department's
+  cases; admin and auditor see all (NFR-05). Separation of duties is checked where the duty happens.
+- Every domain/reference model `include Auditable` (FR-28): audit rows are written in the same transaction;
+  `audit_events` is append-only, enforced by PostgreSQL triggers (`db/functions`, `db/triggers`, fx gem).
+  Domain actions (approve, return…) call `AuditEvent.record`.
+- Money and tax go through `TaxCalculator` (VAT once on the total, satang half-up; withholding on the base
+  before VAT; rates in `withholding_tax_types`). Never hand-roll VAT.
+- Generated documents: `.docx` via Sablon, then PDF via `PdfConverter` (required in production).
 
 - The case model is `ProcurementCase` (`case` is a Ruby keyword); UI calls it "เรื่อง".
 - Services in `app/services`, plain Ruby, one public `call`. Thai helpers in `lib/thai` (`Thai.baht_text`,
