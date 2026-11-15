@@ -34,6 +34,6 @@ RSpec.describe "Result report generation" do
   it "uses the same font as the purchase request form" do
     run = DocxText.document_xml(bytes).xpath("//w:r[w:t[contains(., 'ผลการพิจารณาปรากฏว่า')]]", DocxText::NS).first
 
-    expect(run.at_xpath("w:rPr/w:rFonts/@w:ascii", DocxText::NS).value).to eq("TH SarabunPSK")
+    expect(run.at_xpath("w:rPr/w:rFonts/@w:ascii", DocxText::NS).value).to eq("TH Sarabun New")
   end
 end

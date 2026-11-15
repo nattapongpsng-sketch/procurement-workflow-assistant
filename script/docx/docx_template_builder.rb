@@ -124,6 +124,12 @@ class DocxTemplateBuilder
     paragraph
   end
 
+  # Renames a font in every Word XML part (document, styles, numbering, fontTable, headers).
+  # Applied when the package is written, after all other edits.
+  def replace_font(from, to)
+    (@font_renames ||= []) << [ from, to ]
+  end
+
   def replace_media(name, bytes)
     raise "no media #{name}" unless @entries.key?(name)
 
@@ -227,6 +233,13 @@ class DocxTemplateBuilder
   end
 
   def write
+    Array(@font_renames).each do |from, to|
+      @entries.each_key do |name|
+        next unless name.start_with?("word/") && name.end_with?(".xml")
+
+        @entries[name] = @entries[name].dup.force_encoding("UTF-8").gsub(from, to)
+      end
+    end
     File.binwrite(@target, Zip::OutputStream.write_buffer do |zip|
       @entries.each do |name, bytes|
         zip.put_next_entry(name)

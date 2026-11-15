@@ -36,7 +36,7 @@ RSpec.describe DocumentGenerator do
     value_run = xml.xpath("//w:r[w:t[contains(., 'เจ็ดพันเก้าร้อยเก้าสิบบาทถ้วน')]]", DocxText::NS).first
     static_run = value_run.parent.xpath("w:r[w:t[contains(., 'รวมภาษีมูลค่าเพิ่ม')]]", DocxText::NS).first
 
-    expect(value_run.at_xpath("w:rPr/w:rFonts/@w:ascii", DocxText::NS).value).to eq("TH SarabunPSK")
+    expect(value_run.at_xpath("w:rPr/w:rFonts/@w:ascii", DocxText::NS).value).to eq("TH Sarabun New")
     expect(value_run.at_xpath("w:rPr", DocxText::NS).to_xml).to eq(static_run.at_xpath("w:rPr", DocxText::NS).to_xml)
   end
 

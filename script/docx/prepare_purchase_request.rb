@@ -78,6 +78,8 @@ DocxTemplateBuilder.new(SOURCE, TARGET).build do |doc|
   doc.wrap_image(media: "word/media/image2.png", field: "price.evidence")
   doc.replace_media("word/media/image2.png", DocxTemplateBuilder.placeholder_png(716, 1490))
   doc.scrub_metadata!
+  # Requirement NFR-04: documents use TH Sarabun New (improved, metric-compatible TH SarabunPSK).
+  doc.replace_font("TH SarabunPSK", "TH Sarabun New")
 end
 
 puts "wrote #{TARGET}"
