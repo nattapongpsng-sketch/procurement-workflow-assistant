@@ -15,6 +15,7 @@ class SeedLoader
     load_recommended_ais
     load_people
     load_budget_sources
+    load_withholding_tax_types
     load_document_templates
     Dir[@root.join("workflows/*.yml")].sort.map { |path| WorkflowLoader.load_file(path) }
   end
@@ -71,6 +72,12 @@ class SeedLoader
   def load_budget_sources
     yaml("reference/budget_sources.yml").each do |source|
       BudgetSource.find_or_initialize_by(ref_doc_no: source.fetch("ref_doc_no")).update!(source.except("ref_doc_no"))
+    end
+  end
+
+  def load_withholding_tax_types
+    yaml("reference/withholding_tax_types.yml").each do |row|
+      WithholdingTaxType.find_or_initialize_by(code: row.fetch("code")).update!(row.except("code"))
     end
   end
 

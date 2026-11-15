@@ -85,3 +85,13 @@ RSpec.describe WorkflowLoader do
     expect { described_class.new(broken).call }.to raise_error(WorkflowLoader::Error, /group x/)
   end
 end
+
+RSpec.describe "withholding tax seed data" do
+  it "loads the default income types, all marked for finance confirmation" do
+    SeedLoader.call
+
+    expect(WithholdingTaxType.pluck(:code)).to contain_exactly("goods", "services", "rent", "transport", "advertising")
+    expect(WithholdingTaxType.find_by!(code: "services").rate).to eq(BigDecimal("0.03"))
+    expect(WithholdingTaxType.pluck(:note)).to all(include("รอยืนยัน"))
+  end
+end

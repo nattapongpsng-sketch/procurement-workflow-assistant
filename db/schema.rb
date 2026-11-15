@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_15_160000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_15_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -222,6 +222,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_160000) do
     t.index ["person_id"], name: "index_users_on_person_id"
     t.index ["position_id"], name: "index_users_on_position_id"
     t.index ["roles"], name: "index_users_on_roles", using: :gin
+  end
+
+  create_table "withholding_tax_types", force: :cascade do |t|
+    t.string "code", null: false
+    t.string "name", null: false
+    t.decimal "rate", precision: 5, scale: 4, null: false
+    t.decimal "minimum_amount", precision: 15, scale: 2, default: "0.0", null: false
+    t.string "legal_reference"
+    t.text "note"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_withholding_tax_types_on_code", unique: true
   end
 
   create_table "workflow_documents", force: :cascade do |t|
