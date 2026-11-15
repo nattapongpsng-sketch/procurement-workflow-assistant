@@ -7,8 +7,9 @@
 # project owner on 15 Nov 2026 (OPEN_QUESTIONS Q28). To stay as close to the real
 # form as possible we start from the purchase request template of the same form set
 # (same logo, header table, page size, margins, fonts and paragraph styles) and only
-# replace the body with the text of the PDF, word for word — including the likely
-# typos listed in OPEN_QUESTIONS Q8, until someone decides to fix them.
+# replace the body with the text of the PDF, word for word, except two obvious
+# typos fixed per OPEN_QUESTIONS Q8 (stray ")" after เฉพาะเจาะจง, "ณ วันที่ลงวันที่").
+# The subject wording "อนุมัติจ้าง ขอจัดซื้อ" is kept as the form's own wording.
 # Replace this with the real .docx as soon as one is found.
 require_relative "docx_template_builder"
 
@@ -38,8 +39,8 @@ DocxTemplateBuilder.new(SOURCE, TARGET).build do |doc|
   blank.call
   doc.append_paragraph([
     "ตามอนุมัติรายงานขอซื้อขอจ้าง หนังสือ ", f("request.doc_number"), "  ลงวันที่  ", f("request.doc_date_text"),
-    " ขอจัดซื้อ", f("item.line"), " โดยวิธีเฉพาะเจาะจง ) โดยอ้างอิงราคาที่ประกาศจำหน่ายบนเว็บไซต์ทางการ ",
-    f("price.source_url"), "  สืบราคา ณ วันที่ลงวันที่ ", f("price.survey_date_text"), " จำนวน ",
+    " ขอจัดซื้อ", f("item.line"), " โดยวิธีเฉพาะเจาะจง โดยอ้างอิงราคาที่ประกาศจำหน่ายบนเว็บไซต์ทางการ ",
+    f("price.source_url"), "  สืบราคา ณ วันที่ ", f("price.survey_date_text"), " จำนวน ",
     f("price.reference_money"), " บาท (", f("price.reference_text"), ")  (รวมภาษีมูลค่าเพิ่ม) ",
     "ผลการพิจารณาปรากฏว่า พัสดุมีรายละเอียดถูกต้องตรงตามที่ กฟภ. กำหนด จึงเห็นควรซื้อ/จ้างจากบริษัทดังกล่าวข้างต้น ",
     "และเห็นควรให้", f("people.borrower.display_name"), " ", f("people.borrower.position_with_unit"),

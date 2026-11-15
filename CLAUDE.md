@@ -50,7 +50,8 @@ bundle exec ruby script/docx/build_result_report.rb                            #
 - The case model is `ProcurementCase` (`case` is a Ruby keyword); UI calls it "เรื่อง".
 - Services in `app/services`, plain Ruby, one public `call`. Thai helpers in `lib/thai` (`Thai.baht_text`,
   `Thai.money` → `7,990.-`, `Thai.date(d)` / `Thai.date(d, format: :short)`, `Thai.doc_number`).
-- Money: `BigDecimal` / decimal strings, never floats.
+- Money: `BigDecimal` / decimal strings, never floats. Prices are entered as charged (no automatic VAT, Q14).
+- Document font: TH SarabunPSK, as in the real forms (Q22).
 - Reference fields (`reference`, `person`, `list` of person) store ids; `DocumentContext` expands them
   (e.g. `budget.source.charge_text`, `people.inspectors.text`) for templates.
 - File fields store an Active Storage blob `signed_id`; attachments hang off `ProcurementCase#attachments`.

@@ -17,6 +17,7 @@
 
 ## หลัง M0
 
+- 15 พ.ย. 2569 — ตัดสิน Q2, Q8, Q12, Q13, Q14, Q22 (ดู OPEN_QUESTIONS "ตอบแล้ว"); แก้คำผิดชัด 2 จุดในรายงานผลการพิจารณา; ข้อกฎหมาย/ภาษีที่เหลือแยกเป็น Q34, Q35
 - 15 พ.ย. 2569 — ลบ gem `image_processing`/libvips ที่ไม่ได้ใช้; merge PR อัปเดต GitHub Actions ของ Dependabot (#1–#3)
 - 15 พ.ย. 2569 — เพิ่มเอกสาร **รายงานผลการพิจารณาและอนุมัติสั่งซื้อ** (`result_report.docx`) สร้างจาก PDF ตามที่อนุมัติใน Q28 และ workflow `ai_purchase_under_50k` **v2** (v1 คงเดิม) golden test: `spec/services/result_report_spec.rb`
 
