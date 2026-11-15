@@ -4,7 +4,7 @@
 
 | # | ส่งมอบ | สถานะ | หลักฐาน |
 |---|---|---|---|
-| 1 | Rails 8.1 + SQLite + Tailwind + importmap, Docker Compose dev, bin/setup, .env.example, README | ✅ | `bin/setup --skip-server` ผ่าน; `docker compose config` ผ่าน (ยังไม่ได้ build image เพราะ Docker daemon ปิดอยู่ตอนทดสอบ) |
+| 1 | Rails 8.1 + SQLite + Tailwind + importmap, Docker Compose dev, bin/setup, .env.example, README | ✅ | `bin/setup --skip-server` ผ่าน; `docker compose up --build` ผ่าน (15 พ.ย. 2569: web healthy, ค้นหา/หน้าขั้นตอนตอบ 200, worker ใน container สร้างเอกสารทั้ง 2 ฉบับสำเร็จ) |
 | 2 | โครงสร้าง app/services, app/components, app/templates/docx, db/seeds/workflows, lib/thai | ✅ | |
 | 3 | Models + migrations + validations + seed จาก YAML (workflow AI ≤ 50,000 ครบ 9 ขั้น 53 ฟิลด์ + Recommended List 23 รายการ) | ✅ | `bin/rails db:seed` รันซ้ำได้ไม่สร้างข้อมูลซ้ำ (`spec/services/seed_loader_spec.rb`) |
 | 4 | lib ภาษาไทย + unit test | ✅ | `spec/lib/thai_spec.rb` 30 ตัวอย่าง (เอ็ด/ยี่, ล้าน, สตางค์, วันที่เต็ม/ย่อ, `7,990.-`) |
@@ -17,12 +17,13 @@
 
 ## หลัง M0
 
+- 15 พ.ย. 2569 — ลบ gem `image_processing`/libvips ที่ไม่ได้ใช้; merge PR อัปเดต GitHub Actions ของ Dependabot (#1–#3)
 - 15 พ.ย. 2569 — เพิ่มเอกสาร **รายงานผลการพิจารณาและอนุมัติสั่งซื้อ** (`result_report.docx`) สร้างจาก PDF ตามที่อนุมัติใน Q28 และ workflow `ai_purchase_under_50k` **v2** (v1 คงเดิม) golden test: `spec/services/result_report_spec.rb`
 
 ### รอตรวจ
 
 - [ ] เปิด `tmp/samples/purchase_request_sample.docx` และ `tmp/samples/result_report_sample.docx` (`bin/rails docs:render_sample`) ใน Word เทียบกับแบบฟอร์มจริง/PDF — ยังไม่มีใครเปิดด้วย Word (ตำแหน่งช่องลงนามของรายงานผลประมาณจากภาพ PDF)
-- [ ] `docker compose up --build` บนเครื่องที่เปิด Docker แล้ว
+- [x] `docker compose up --build` — ตรวจแล้ว 15 พ.ย. 2569
 
 ### การตัดสินใจระหว่าง M0
 
