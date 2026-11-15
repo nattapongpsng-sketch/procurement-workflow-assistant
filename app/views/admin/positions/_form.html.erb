@@ -1,0 +1,19 @@
+<%= render "admin/errors", record: position %>
+<%= form_with model: [ :admin, position ], class: "flex flex-col gap-5 rounded-panel border border-border bg-surface p-6" do |f| %>
+  <div class="grid gap-5 sm:grid-cols-2">
+    <div class="flex flex-col gap-1">
+      <%= f.label :title, class: "text-sm font-medium" %>
+      <%= f.text_field :title, required: true, class: input_class %>
+      <p class="text-[13px] text-text-2">เช่น ผู้ช่วยผู้ว่าการ, ผู้อำนวยการกอง</p>
+    </div>
+    <div class="flex flex-col gap-1">
+      <%= f.label :short_title, class: "text-sm font-medium" %>
+      <%= f.text_field :short_title, class: input_class %>
+      <p class="text-[13px] text-text-2">ชื่อย่อที่ใช้ในเอกสาร เช่น ผชก., อก.</p>
+    </div>
+  </div>
+  <div class="flex gap-2">
+    <%= render ButtonComponent.new("บันทึก", type: "submit") %>
+    <%= render ButtonComponent.new("ยกเลิก", href: admin_positions_path, variant: :outlined) %>
+  </div>
+<% end %>

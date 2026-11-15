@@ -1,0 +1,18 @@
+<% content_for :title, "ลืมรหัสผ่าน" %>
+<% content_for :nav, "none" %>
+
+<section class="mx-auto flex w-full max-w-md flex-col gap-5 rounded-panel border border-border bg-surface p-6 sm:p-8">
+  <div class="flex flex-col gap-1">
+    <h1 class="text-[28px] font-bold">ลืมรหัสผ่าน</h1>
+    <p class="text-sm text-text-2">กรอกอีเมลของบัญชี ระบบจะส่งลิงก์สำหรับตั้งรหัสผ่านใหม่ให้</p>
+  </div>
+  <%= form_with url: passwords_path, class: "flex flex-col gap-4" do |form| %>
+    <div class="flex flex-col gap-1">
+      <%= form.label :email_address, "อีเมล", class: "text-sm font-medium" %>
+      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", value: params[:email_address],
+            class: "h-11 rounded-ctl border border-border-strong px-3 focus:border-primary focus:ring-4 focus:ring-primary-ring focus:outline-none" %>
+    </div>
+    <%= render ButtonComponent.new("ส่งลิงก์ตั้งรหัสผ่านใหม่", type: "submit", size: :lg, class: "w-full") %>
+  <% end %>
+  <%= link_to "กลับไปหน้าเข้าสู่ระบบ", new_session_path, class: "self-start text-sm" %>
+</section>

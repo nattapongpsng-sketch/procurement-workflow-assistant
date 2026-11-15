@@ -1,0 +1,6 @@
+มีคำขอตั้งรหัสผ่านใหม่สำหรับบัญชีของคุณในระบบจัดซื้อง่าย
+
+ตั้งรหัสผ่านใหม่: <%= edit_password_url(@user.password_reset_token) %>
+ลิงก์นี้ใช้ได้ภายใน <%= distance_of_time_in_words(0, @user.password_reset_token_expires_in) %>
+
+ถ้าคุณไม่ได้ขอ ไม่ต้องทำอะไร รหัสผ่านเดิมยังใช้ได้

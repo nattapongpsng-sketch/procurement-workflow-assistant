@@ -1,0 +1,24 @@
+<% content_for :title, "ส่วนงาน" %>
+<%= render "admin/tabs" %>
+<div class="flex items-center justify-between gap-4">
+  <p class="text-sm text-text-2">ส่วนงานของ <%= current_organization.name %> — ใช้แยกสิทธิ์การมองเห็นเรื่องและลำดับการอนุมัติ</p>
+  <%= render ButtonComponent.new("เพิ่มส่วนงาน", href: new_admin_department_path) %>
+</div>
+<div class="overflow-x-auto rounded-card border border-border bg-surface">
+  <table class="w-full text-left text-sm">
+    <thead class="bg-muted text-xs font-semibold text-text-2">
+      <tr><th class="px-4 py-3">รหัส</th><th class="px-4 py-3">ชื่อส่วนงาน</th><th class="px-4 py-3">สังกัด</th><th class="px-4 py-3">สถานะ</th><th class="px-4 py-3"><span class="sr-only">แก้ไข</span></th></tr>
+    </thead>
+    <tbody class="divide-y divide-border">
+      <% @departments.each do |department| %>
+        <tr>
+          <td class="px-4 py-3 font-medium"><%= department.code %></td>
+          <td class="px-4 py-3"><%= department.name %></td>
+          <td class="px-4 py-3"><%= department.parent&.label || "—" %></td>
+          <td class="px-4 py-3"><%= render BadgeComponent.new(department.active? ? "ใช้งาน" : "ปิดใช้งาน", tone: department.active? ? :success : :neutral) %></td>
+          <td class="px-4 py-3 text-right"><%= link_to "แก้ไข", edit_admin_department_path(department) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

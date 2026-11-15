@@ -1,0 +1,63 @@
+<%= render "admin/errors", record: user %>
+<%= form_with model: [ :admin, user ], class: "flex flex-col gap-5 rounded-panel border border-border bg-surface p-6" do |f| %>
+  <div class="grid gap-5 sm:grid-cols-2">
+    <div class="flex flex-col gap-1">
+      <%= f.label :name, class: "text-sm font-medium" %>
+      <%= f.text_field :name, required: true, class: input_class %>
+      <p class="text-[13px] text-text-2">ชื่อที่แสดงในระบบ เช่น นายสมชาย ใจดี</p>
+    </div>
+    <div class="flex flex-col gap-1">
+      <%= f.label :email_address, class: "text-sm font-medium" %>
+      <%= f.email_field :email_address, required: true, autocomplete: "off", class: input_class %>
+      <p class="text-[13px] text-text-2">ใช้เข้าสู่ระบบและรับแจ้งเตือน</p>
+    </div>
+    <div class="flex flex-col gap-1">
+      <%= f.label :password, class: "text-sm font-medium" %>
+      <%= f.password_field :password, autocomplete: "new-password", minlength: 12, maxlength: 72, required: user.new_record?, class: input_class %>
+      <p class="text-[13px] text-text-2"><%= user.new_record? ? "อย่างน้อย 12 ตัวอักษร แจ้งผู้ใช้ให้เปลี่ยนเองหลังเข้าสู่ระบบครั้งแรก" : "เว้นว่างถ้าไม่เปลี่ยน" %></p>
+    </div>
+    <div class="flex flex-col gap-1">
+      <%= f.label :password_confirmation, class: "text-sm font-medium" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", maxlength: 72, class: input_class %>
+    </div>
+    <div class="flex flex-col gap-1">
+      <%= f.label :department_id, User.human_attribute_name(:department), class: "text-sm font-medium" %>
+      <%= f.collection_select :department_id, current_organization.departments.active.ordered, :id, :label, { include_blank: "— ไม่ระบุ —" }, class: input_class %>
+      <p class="text-[13px] text-text-2">ผู้ใช้เห็นเฉพาะเรื่องของส่วนงานนี้ (ยกเว้นผู้ดูแลระบบและผู้ตรวจสอบ)</p>
+    </div>
+    <div class="flex flex-col gap-1">
+      <%= f.label :position_id, User.human_attribute_name(:position), class: "text-sm font-medium" %>
+      <%= f.collection_select :position_id, current_organization.positions.ordered, :id, :label, { include_blank: "— ไม่ระบุ —" }, class: input_class %>
+      <p class="text-[13px] text-text-2">ใช้กำหนดวงเงินอำนาจอนุมัติ (เปิดใช้ใน M2)</p>
+    </div>
+    <div class="flex flex-col gap-1 sm:col-span-2">
+      <%= f.label :person_id, User.human_attribute_name(:person), class: "text-sm font-medium" %>
+      <%= f.collection_select :person_id, Person.alphabetical, :id, ->(p) { "#{p.display_name} · #{p.position_with_unit}" }, { include_blank: "— ไม่ระบุ —" }, class: input_class %>
+      <p class="text-[13px] text-text-2">ชื่อ ตำแหน่ง และรหัสพนักงานที่จะพิมพ์ในเอกสารเมื่อผู้ใช้นี้เป็นผู้ลงนาม</p>
+    </div>
+  </div>
+
+  <fieldset class="flex flex-col gap-2">
+    <legend class="text-sm font-medium"><%= User.human_attribute_name(:roles) %></legend>
+    <p class="text-[13px] text-text-2">เลือกได้หลายบทบาท ระบบจะกันไม่ให้คนเดียวกันทำหน้าที่ที่ต้องแยกกันในเรื่องเดียว</p>
+    <%= hidden_field_tag "user[roles][]", "" %>
+    <div class="grid gap-2 sm:grid-cols-2">
+      <% User::ROLES.each do |role| %>
+        <label class="flex items-center gap-2 rounded-ctl border border-border px-3 py-2">
+          <%= check_box_tag "user[roles][]", role, user.role?(role), id: "user_roles_#{role}", class: "size-4 accent-primary" %>
+          <span><%= User.role_label(role) %></span>
+        </label>
+      <% end %>
+    </div>
+  </fieldset>
+
+  <label class="flex items-center gap-2">
+    <%= f.check_box :active, class: "size-4 accent-primary" %>
+    <span><%= User.human_attribute_name(:active) %> <span class="text-[13px] text-text-2">— ปิดเพื่อระงับการเข้าสู่ระบบโดยไม่ลบประวัติ</span></span>
+  </label>
+
+  <div class="flex gap-2">
+    <%= render ButtonComponent.new("บันทึก", type: "submit") %>
+    <%= render ButtonComponent.new("ยกเลิก", href: admin_users_path, variant: :outlined) %>
+  </div>
+<% end %>

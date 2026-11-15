@@ -1,7 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "Searching for a workflow" do
-  before { SeedLoader.call }
+  before do
+    SeedLoader.call
+    sign_in_as(create(:user))
+  end
 
   it "finds the AI purchase workflow and shows all its steps" do
     visit root_path

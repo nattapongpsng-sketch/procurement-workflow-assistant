@@ -1,0 +1,23 @@
+<%= render "admin/errors", record: department %>
+<%= form_with model: [ :admin, department ], class: "flex flex-col gap-5 rounded-panel border border-border bg-surface p-6" do |f| %>
+  <div class="grid gap-5 sm:grid-cols-2">
+    <div class="flex flex-col gap-1">
+      <%= f.label :code, class: "text-sm font-medium" %>
+      <%= f.text_field :code, required: true, class: input_class %>
+      <p class="text-[13px] text-text-2">ตัวย่อที่ใช้ในเลขที่หนังสือ เช่น สชก.(บก-ท)</p>
+    </div>
+    <div class="flex flex-col gap-1">
+      <%= f.label :name, class: "text-sm font-medium" %>
+      <%= f.text_field :name, required: true, class: input_class %>
+    </div>
+    <div class="flex flex-col gap-1">
+      <%= f.label :parent_id, Department.human_attribute_name(:parent), class: "text-sm font-medium" %>
+      <%= f.collection_select :parent_id, current_organization.departments.where.not(id: department.id).ordered, :id, :label, { include_blank: "— ไม่มี —" }, class: input_class %>
+    </div>
+  </div>
+  <label class="flex items-center gap-2"><%= f.check_box :active, class: "size-4 accent-primary" %><span><%= Department.human_attribute_name(:active) %></span></label>
+  <div class="flex gap-2">
+    <%= render ButtonComponent.new("บันทึก", type: "submit") %>
+    <%= render ButtonComponent.new("ยกเลิก", href: admin_departments_path, variant: :outlined) %>
+  </div>
+<% end %>

@@ -11,6 +11,7 @@ class SeedLoader
   end
 
   def call
+    load_organization
     load_recommended_ais
     load_people
     load_budget_sources
@@ -21,6 +22,36 @@ class SeedLoader
   private
 
   def yaml(relative) = YAML.safe_load_file(@root.join(relative), permitted_classes: [ Date ])
+
+  def load_organization
+    data = yaml("reference/organization.yml")
+    attrs = data.fetch("organization")
+    organization = Organization.find_or_initialize_by(code: attrs.fetch("code"))
+    organization.update!(attrs.except("code"))
+    data.fetch("departments", []).each do |department|
+      organization.departments.find_or_initialize_by(code: department.fetch("code")).update!(department.except("code"))
+    end
+    data.fetch("positions", []).each do |position|
+      organization.positions.find_or_initialize_by(title: position.fetch("title")).update!(position.except("title"))
+    end
+  end
+
+  # Development only: fictional users for every role, all in the first department.
+  def self.load_development_users(password:)
+    raise "development users must not be loaded in #{Rails.env}" if Rails.env.production?
+
+    organization = Organization.order(:id).first!
+    department = organization.departments.order(:id).first!
+    YAML.safe_load_file(ROOT.join("development_users.yml")).map do |row|
+      user = User.find_or_initialize_by(email_address: row.fetch("email"))
+      user.assign_attributes(name: row.fetch("name"), roles: row.fetch("roles"), department:, active: true,
+                             person: row["person"] && Person.find_by(employee_code: row["person"]),
+                             position: row["position"] && organization.positions.find_by(title: row["position"]))
+      user.password = password if user.new_record?
+      user.save!
+      user
+    end
+  end
 
   def load_recommended_ais
     list = yaml("reference/recommended_ai.yml")

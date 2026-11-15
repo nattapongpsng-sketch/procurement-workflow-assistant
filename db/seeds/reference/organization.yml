@@ -1,0 +1,12 @@
+# หน่วยงานนำร่อง (ข้อมูลองค์กร ไม่ใช่ข้อมูลบุคคล) — แก้ได้ในหน้า ตั้งค่า
+organization:
+  code: PEA
+  name: การไฟฟ้าส่วนภูมิภาค
+  short_name: กฟภ.
+departments:
+  - { code: "สชก.(บก-ท)", name: Thai Skill Unit }
+positions:
+  - { title: ผู้ช่วยผู้ว่าการ, short_title: ผชก. }
+  - { title: ผู้อำนวยการกอง, short_title: อก. }
+  - { title: วิศวกร ระดับ 5, short_title: วศก.5 }
+  - { title: พนักงาน ระดับ 6, short_title: พชง.6 }

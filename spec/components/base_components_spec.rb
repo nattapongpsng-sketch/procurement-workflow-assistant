@@ -27,11 +27,23 @@ RSpec.describe "base components", type: :component do
     expect(page).to have_css("[role=alert]", text: "ไม่ผ่านเงื่อนไขเหตุผล")
   end
 
-  it "marks the current page in the header" do
-    render_inline(AppHeaderComponent.new(current: "search"))
+  it "marks the current page and shows the signed-in user in the header" do
+    render_inline(AppHeaderComponent.new(current: "search", user: build_stubbed(:user, name: "นายสมมติ ทดสอบ")))
 
-    expect(page).to have_link("ค้นหา Workflow", href: "/")
     expect(page).to have_css("a[aria-current=page]", text: "ค้นหา Workflow")
+    expect(page).to have_text("นายสมมติ ทดสอบ")
+    expect(page).to have_text("ผู้ขอซื้อ / ขอเบิก")
+    expect(page).to have_button("ออกจากระบบ")
+    expect(page).to have_no_link("ตั้งค่า")
+  end
+
+  it "shows the settings menu to admins only and hides navigation when signed out" do
+    render_inline(AppHeaderComponent.new(user: build_stubbed(:user, :admin)))
+    expect(page).to have_link("ตั้งค่า", href: "/admin/users")
+
+    render_inline(AppHeaderComponent.new)
+    expect(page).to have_no_css("nav")
+    expect(page).to have_no_button("ออกจากระบบ")
   end
 
   it "explains a field with help, example and reason" do

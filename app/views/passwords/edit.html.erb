@@ -1,0 +1,20 @@
+<% content_for :title, "ตั้งรหัสผ่านใหม่" %>
+<% content_for :nav, "none" %>
+
+<section class="mx-auto flex w-full max-w-md flex-col gap-5 rounded-panel border border-border bg-surface p-6 sm:p-8">
+  <h1 class="text-[28px] font-bold">ตั้งรหัสผ่านใหม่</h1>
+  <%= form_with url: password_path(params[:token]), method: :put, class: "flex flex-col gap-4" do |form| %>
+    <div class="flex flex-col gap-1">
+      <%= form.label :password, "รหัสผ่านใหม่", class: "text-sm font-medium" %>
+      <%= form.password_field :password, required: true, autocomplete: "new-password", minlength: 12, maxlength: 72,
+            class: "h-11 rounded-ctl border border-border-strong px-3 focus:border-primary focus:ring-4 focus:ring-primary-ring focus:outline-none" %>
+      <p class="text-[13px] text-text-2">อย่างน้อย 12 ตัวอักษร</p>
+    </div>
+    <div class="flex flex-col gap-1">
+      <%= form.label :password_confirmation, "ยืนยันรหัสผ่านใหม่", class: "text-sm font-medium" %>
+      <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", maxlength: 72,
+            class: "h-11 rounded-ctl border border-border-strong px-3 focus:border-primary focus:ring-4 focus:ring-primary-ring focus:outline-none" %>
+    </div>
+    <%= render ButtonComponent.new("บันทึกรหัสผ่าน", type: "submit", size: :lg, class: "w-full") %>
+  <% end %>
+</section>

@@ -1,0 +1,22 @@
+<% content_for :title, "ตำแหน่ง" %>
+<%= render "admin/tabs" %>
+<div class="flex items-center justify-between gap-4">
+  <p class="text-sm text-text-2">ตำแหน่งใช้กำหนดวงเงินอำนาจอนุมัติ (ตั้งค่าวงเงินได้ใน M2)</p>
+  <%= render ButtonComponent.new("เพิ่มตำแหน่ง", href: new_admin_position_path) %>
+</div>
+<div class="overflow-x-auto rounded-card border border-border bg-surface">
+  <table class="w-full text-left text-sm">
+    <thead class="bg-muted text-xs font-semibold text-text-2">
+      <tr><th class="px-4 py-3">ชื่อตำแหน่ง</th><th class="px-4 py-3">ชื่อย่อ</th><th class="px-4 py-3"><span class="sr-only">แก้ไข</span></th></tr>
+    </thead>
+    <tbody class="divide-y divide-border">
+      <% @positions.each do |position| %>
+        <tr>
+          <td class="px-4 py-3 font-medium"><%= position.title %></td>
+          <td class="px-4 py-3"><%= position.short_title.presence || "—" %></td>
+          <td class="px-4 py-3 text-right"><%= link_to "แก้ไข", edit_admin_position_path(position) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

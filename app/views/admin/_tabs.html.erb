@@ -1,0 +1,11 @@
+<% content_for :nav, "admin" %>
+<header class="flex flex-col gap-3">
+  <h1 class="text-[28px] font-bold">ตั้งค่า</h1>
+  <nav aria-label="ตั้งค่า" class="flex flex-wrap gap-1 border-b border-border">
+    <% [ [ "ผู้ใช้", admin_users_path ], [ "ส่วนงาน", admin_departments_path ], [ "ตำแหน่ง", admin_positions_path ] ].each do |label, path| %>
+      <% active = current_page?(path) || request.path.start_with?("#{path}/") %>
+      <%= link_to label, path, aria: { current: (active ? "page" : nil) },
+            class: "-mb-px border-b-2 px-4 py-2 font-medium no-underline #{active ? 'border-primary text-primary' : 'border-transparent text-text-2 hover:text-text'}" %>
+    <% end %>
+  </nav>
+</header>

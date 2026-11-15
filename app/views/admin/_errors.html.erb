@@ -1,0 +1,9 @@
+<% if record.errors.any? %>
+  <%= render CalloutComponent.new(tone: :error, title: "บันทึกไม่ได้ กรุณาแก้ไขต่อไปนี้") do %>
+    <ul class="list-disc pl-5">
+      <% record.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>

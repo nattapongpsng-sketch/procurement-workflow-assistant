@@ -1,0 +1,10 @@
+# Development only (never loaded in production). Fictional people; password from
+# DEV_USER_PASSWORD (default below, ≥ 12 characters).
+- { email: admin@example.com,     name: ผู้ดูแลระบบ ตัวอย่าง, roles: [admin] }
+- { email: requester@example.com, name: นายสมชาย ตัวอย่าง,  roles: [requester],           person: "900001", position: วิศวกร ระดับ 5 }
+- { email: officer@example.com,   name: นางสาวพัสดุ สมมติ,   roles: [procurement_officer] }
+- { email: head@example.com,      name: นางสาวสมหญิง สมมติ,  roles: [procurement_head],    person: "900003", position: ผู้อำนวยการกอง }
+- { email: approver@example.com,  name: นายประเสริฐ ตั้งใจ,  roles: [approver],            person: "900004", position: ผู้ช่วยผู้ว่าการ }
+- { email: inspector@example.com, name: นายวิชัย ทดลองดี,    roles: [inspector],           person: "900002", position: พนักงาน ระดับ 6 }
+- { email: finance@example.com,   name: นางการเงิน ตัวอย่าง, roles: [finance] }
+- { email: auditor@example.com,   name: นายตรวจสอบ ตัวอย่าง, roles: [auditor] }

@@ -7,3 +7,9 @@ puts "Document templates: #{DocumentTemplate.pluck(:code, :version).map { |c, v|
 workflows.each do |w|
   puts "Workflow: #{w.code} v#{w.version} (#{w.status}) — #{w.workflow_steps.count} steps, #{w.field_definitions.count} fields"
 end
+
+if Rails.env.development?
+  password = ENV.fetch("DEV_USER_PASSWORD", "dev-password-1234")
+  users = SeedLoader.load_development_users(password:)
+  puts "Development users (password: #{password}): #{users.map(&:email_address).join(', ')}"
+end

@@ -6,3 +6,37 @@ th:
     borrower: ผู้ยืมเงิน
     finance: หน่วยการเงิน
     organization: หน่วยงาน
+  user_roles:
+    requester: ผู้ขอซื้อ / ขอเบิก
+    procurement_officer: เจ้าหน้าที่พัสดุ
+    procurement_head: หัวหน้าเจ้าหน้าที่
+    approver: ผู้มีอำนาจอนุมัติ
+    inspector: ผู้ตรวจรับพัสดุ
+    finance: เจ้าหน้าที่การเงิน
+    admin: ผู้ดูแลระบบ (Admin)
+    auditor: ผู้ตรวจสอบ (อ่านอย่างเดียว)
+  activerecord:
+    models:
+      user: ผู้ใช้
+      department: ส่วนงาน
+      position: ตำแหน่ง
+      organization: หน่วยงาน
+    attributes:
+      user:
+        email_address: อีเมล
+        password: รหัสผ่าน
+        password_confirmation: ยืนยันรหัสผ่าน
+        name: ชื่อ-นามสกุล
+        department: ส่วนงาน
+        position: ตำแหน่ง
+        person: ข้อมูลบุคคลในเอกสาร
+        roles: บทบาท
+        active: ใช้งานอยู่
+      department:
+        name: ชื่อส่วนงาน
+        code: รหัสส่วนงาน
+        parent: สังกัด
+        active: ใช้งานอยู่
+      position:
+        title: ชื่อตำแหน่ง
+        short_title: ชื่อย่อ

@@ -1,0 +1,4 @@
+<% content_for :title, "แก้ไขผู้ใช้" %>
+<%= render "admin/tabs" %>
+<h2 class="text-xl font-semibold">แก้ไขผู้ใช้: <%= @user.name_was || @user.name %></h2>
+<%= render "form", user: @user %>
