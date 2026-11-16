@@ -38,6 +38,8 @@ bin/setup                 # bundle, เตรียม DB, seed แล้วเ�
 ```
 
 ถ้า shell ไม่โหลด mise อัตโนมัติ ให้รัน `eval "$(mise env -s bash)"` ก่อน
+เลือกแบบใดแบบหนึ่ง: ถ้าเคย `docker compose up` ไว้ ให้ `docker compose stop web css jobs` ก่อน `bin/dev`
+(ไม่งั้นจะเจอ `Address already in use … port 3000`) — คง `db` ไว้ เพราะ `bin/dev` ใช้ PostgreSQL ตัวนั้น
 บนเครื่องไม่มี LibreOffice: ระบบยังสร้าง .docx ได้ ส่วน PDF สร้างใน Docker และ CI (spec ส่วน PDF จะถูกข้าม)
 
 ## ทดสอบและตรวจคุณภาพ
