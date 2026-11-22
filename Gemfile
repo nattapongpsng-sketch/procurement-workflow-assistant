@@ -61,7 +61,7 @@ gem "rspec-rails", "~> 8.1", groups: [ :development, :test ]
 gem "factory_bot_rails", "~> 6.5", groups: [ :development, :test ]
 
 gem "capybara", "~> 3.40", group: :test
-gem "selenium-webdriver", "~> 4.52", group: :test
+gem "selenium-webdriver", "~> 4.53", group: :test
 
 gem "rails-i18n", "~> 8.1"
 
